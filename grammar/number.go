@@ -6,32 +6,32 @@ import (
 	"github.com/jtdubs/go-svparser/ast"
 )
 
-func Number(c nom.Cursor[rune]) (nom.Cursor[rune], ast.Number, error) {
+func Number(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Number, error) {
 	return nom.Alt(
 		To[ast.Number](RealNumber),
 		To[ast.Number](IntegralNumber),
-	)(c)
+	)(start)
 }
 
-func IntegralNumber(c nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegralNumber, error) {
+func IntegralNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegralNumber, error) {
 	return nom.Alt(
 		To[ast.IntegralNumber](octalNumber),
 		To[ast.IntegralNumber](binaryNumber),
 		To[ast.IntegralNumber](hexNumber),
 		To[ast.IntegralNumber](DecimalNumber),
-	)(c)
+	)(start)
 }
 
-func DecimalNumber(c nom.Cursor[rune]) (nom.Cursor[rune], ast.DecimalNumber, error) {
+func DecimalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.DecimalNumber, error) {
 	return nom.Alt(
 		To[ast.DecimalNumber](decimalNumberX),
 		To[ast.DecimalNumber](decimalNumberZ),
 		To[ast.DecimalNumber](decimalNumberUnsigned),
 		To[ast.DecimalNumber](UnsignedNumber),
-	)(c)
+	)(start)
 }
 
-func decimalNumberZ(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, error) {
+func decimalNumberZ(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, error) {
 	res := &ast.DecimalNumberZ{}
 	return Bake(nom.Value(
 		BindToken(
@@ -44,10 +44,10 @@ func decimalNumberZ(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, 
 			&res.Token,
 		),
 		res,
-	))(c)
+	))(start)
 }
 
-func decimalNumberX(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, error) {
+func decimalNumberX(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, error) {
 	res := &ast.DecimalNumberX{}
 	return Bake(nom.Value(
 		BindToken(
@@ -60,10 +60,10 @@ func decimalNumberX(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, 
 			&res.Token,
 		),
 		res,
-	))(c)
+	))(start)
 }
 
-func decimalNumberUnsigned(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberUnsigned, error) {
+func decimalNumberUnsigned(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberUnsigned, error) {
 	res := &ast.DecimalNumberUnsigned{}
 	return Bake(nom.Value(
 		BindToken(
@@ -75,10 +75,10 @@ func decimalNumberUnsigned(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNu
 			&res.Token,
 		),
 		res,
-	))(c)
+	))(start)
 }
 
-func binaryNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, error) {
+func binaryNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, error) {
 	res := &ast.BinaryNumber{}
 	return Bake(nom.Value(
 		BindToken(
@@ -90,10 +90,10 @@ func binaryNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, erro
 			&res.Token,
 		),
 		res,
-	))(c)
+	))(start)
 }
 
-func octalNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error) {
+func octalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error) {
 	res := &ast.OctalNumber{}
 	return Bake(nom.Value(
 		BindToken(
@@ -105,10 +105,10 @@ func octalNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error)
 			&res.Token,
 		),
 		res,
-	))(c)
+	))(start)
 }
 
-func hexNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
+func hexNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
 	res := &ast.HexNumber{}
 	return Bake(nom.Value(
 		BindToken(
@@ -120,122 +120,122 @@ func hexNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
 			&res.Token,
 		),
 		res,
-	))(c)
+	))(start)
 }
 
 var sign = runes.OneOf("+-")
 
-func size(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return nonZeroUnsignedNumber(c)
+func size(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+	return nonZeroUnsignedNumber(start)
 }
 
-func nonZeroUnsignedNumber(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func nonZeroUnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq2(
 		nonZeroDecimalDigit,
 		nom.Many0(nom.Alt(decimalDigit, runes.Rune('_'))),
-	)(c)
+	)(start)
 }
 
-func RealNumber(c nom.Cursor[rune]) (nom.Cursor[rune], ast.RealNumber, error) {
+func RealNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.RealNumber, error) {
 	return nom.Alt(
 		To[ast.RealNumber](FloatingPointNumber),
 		To[ast.RealNumber](FixedPointNumber),
-	)(c)
+	)(start)
 }
 
-func FloatingPointNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.FloatingPointNumber, error) {
+func FloatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FloatingPointNumber, error) {
 	res := &ast.FloatingPointNumber{}
-	return Bake(nom.Value(BindToken(floatingPointNumber, &res.Token), res))(c)
+	return Bake(nom.Value(BindToken(floatingPointNumber, &res.Token), res))(start)
 }
 
-func floatingPointNumber(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func floatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq5(
 		UnsignedNumber,
 		nom.Opt(nom.Preceded(runes.Rune('.'), UnsignedNumber)),
 		exp,
 		nom.Opt(sign),
 		unsignedNumber,
-	)(c)
+	)(start)
 }
 
-func FixedPointNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPointNumber, error) {
+func FixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPointNumber, error) {
 	res := &ast.FixedPointNumber{}
-	return Bake(nom.Value(BindToken(fixedPointNumber, &res.Token), res))(c)
+	return Bake(nom.Value(BindToken(fixedPointNumber, &res.Token), res))(start)
 }
 
-func fixedPointNumber(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func fixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq3(
 		unsignedNumber,
 		runes.Rune('.'),
 		unsignedNumber,
-	)(c)
+	)(start)
 }
 
 var exp = runes.OneOf("eE")
 
-func UnsignedNumber(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
+func UnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
 	res := &ast.UnsignedNumber{}
-	return Bake(nom.Value(BindToken(unsignedNumber, &res.Token), res))(c)
+	return Bake(nom.Value(BindToken(unsignedNumber, &res.Token), res))(start)
 }
 
-func unsignedNumber(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func unsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq2(
 		decimalDigit,
 		nom.Many0(nom.Alt(decimalDigit, runes.Rune('_'))),
-	)(c)
+	)(start)
 }
 
-func binaryValue(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func binaryValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq2(
 		binaryDigit,
 		nom.Many0(nom.Alt(binaryDigit, runes.Rune('_'))),
-	)(c)
+	)(start)
 }
 
-func octalValue(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func octalValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq2(
 		octalDigit,
 		nom.Many0(nom.Alt(octalDigit, runes.Rune('_'))),
-	)(c)
+	)(start)
 }
 
-func hexValue(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func hexValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq2(
 		hexDigit,
 		nom.Many0(nom.Alt(hexDigit, runes.Rune('_'))),
-	)(c)
+	)(start)
 }
 
-func decimalBase(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func decimalBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq3(
 		runes.Rune('\''),
 		nom.Opt(runes.OneOf("sS")),
 		runes.OneOf("dD"),
-	)(c)
+	)(start)
 }
 
-func binaryBase(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func binaryBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq3(
 		runes.Rune('\''),
 		nom.Opt(runes.OneOf("sS")),
 		runes.OneOf("bB"),
-	)(c)
+	)(start)
 }
 
-func octalBase(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func octalBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq3(
 		runes.Rune('\''),
 		nom.Opt(runes.OneOf("sS")),
 		runes.OneOf("oO"),
-	)(c)
+	)(start)
 }
 
-func hexBase(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func hexBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.RecognizeSeq3(
 		runes.Rune('\''),
 		nom.Opt(runes.OneOf("sS")),
 		runes.OneOf("hH"),
-	)(c)
+	)(start)
 }
 
 var nonZeroDecimalDigit = runes.OneOf("123456789")
@@ -246,11 +246,11 @@ var hexDigit = runes.OneOf("0123456789abcdefABCDEFxXzZ?")
 var xDigit = runes.OneOf("xX")
 var zDigit = runes.OneOf("zZ?")
 
-func UnbasedUnsizedLiteral(c nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnbasedUnsizedLiteral, error) {
+func UnbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnbasedUnsizedLiteral, error) {
 	res := &ast.UnbasedUnsizedLiteral{}
-	return nom.Value(BindToken(unbasedUnsizedLiteral, &res.Token), res)(c)
+	return nom.Value(BindToken(unbasedUnsizedLiteral, &res.Token), res)(start)
 }
 
-func unbasedUnsizedLiteral(c nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq(runes.Rune('\''), runes.OneOf("01xXzZ"))(c)
+func unbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+	return runes.RecognizeSeq(runes.Rune('\''), runes.OneOf("01xXzZ"))(start)
 }
