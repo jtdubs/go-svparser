@@ -123,16 +123,16 @@ func hexNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error)
 	))(start)
 }
 
-var sign = runes.OneOf("+-")
+var sign = runes.Recognize(runes.OneOf("+-"))
 
 func size(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return nonZeroUnsignedNumber(start)
 }
 
 func nonZeroUnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq2(
+	return runes.Cons(
 		nonZeroDecimalDigit,
-		nom.Many0(nom.Alt(decimalDigit, runes.Rune('_'))),
+		runes.Join(nom.Many0(nom.Alt(decimalDigit, runes.Rune('_')))),
 	)(start)
 }
 
@@ -149,12 +149,14 @@ func FloatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Floatin
 }
 
 func floatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq5(
-		UnsignedNumber,
-		nom.Opt(nom.Preceded(runes.Rune('.'), UnsignedNumber)),
-		exp,
-		nom.Opt(sign),
-		unsignedNumber,
+	return runes.Concat(
+		nom.Seq(
+			unsignedNumber,
+			nom.Opt(nom.Preceded(runes.Rune('.'), unsignedNumber)),
+			exp,
+			nom.Opt(sign),
+			unsignedNumber,
+		),
 	)(start)
 }
 
@@ -164,14 +166,16 @@ func FixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPoint
 }
 
 func fixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq3(
-		unsignedNumber,
-		runes.Rune('.'),
-		unsignedNumber,
+	return runes.Concat(
+		nom.Seq(
+			unsignedNumber,
+			runes.Tag("."),
+			unsignedNumber,
+		),
 	)(start)
 }
 
-var exp = runes.OneOf("eE")
+var exp = runes.Recognize(runes.OneOf("eE"))
 
 func UnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
 	res := &ast.UnsignedNumber{}
@@ -179,62 +183,70 @@ func UnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumb
 }
 
 func unsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq2(
+	return runes.Cons(
 		decimalDigit,
-		nom.Many0(nom.Alt(decimalDigit, runes.Rune('_'))),
+		runes.Join(nom.Many0(nom.Alt(decimalDigit, runes.Rune('_')))),
 	)(start)
 }
 
 func binaryValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq2(
+	return runes.Cons(
 		binaryDigit,
-		nom.Many0(nom.Alt(binaryDigit, runes.Rune('_'))),
+		runes.Join(nom.Many0(nom.Alt(binaryDigit, runes.Rune('_')))),
 	)(start)
 }
 
 func octalValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq2(
+	return runes.Cons(
 		octalDigit,
-		nom.Many0(nom.Alt(octalDigit, runes.Rune('_'))),
+		runes.Join(nom.Many0(nom.Alt(octalDigit, runes.Rune('_')))),
 	)(start)
 }
 
 func hexValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq2(
+	return runes.Cons(
 		hexDigit,
-		nom.Many0(nom.Alt(hexDigit, runes.Rune('_'))),
+		runes.Join(nom.Many0(nom.Alt(hexDigit, runes.Rune('_')))),
 	)(start)
 }
 
 func decimalBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq3(
-		runes.Rune('\''),
-		nom.Opt(runes.OneOf("sS")),
-		runes.OneOf("dD"),
+	return runes.Join(
+		nom.Seq(
+			runes.Rune('\''),
+			nom.Opt(runes.OneOf("sS")),
+			runes.OneOf("dD"),
+		),
 	)(start)
 }
 
 func binaryBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq3(
-		runes.Rune('\''),
-		nom.Opt(runes.OneOf("sS")),
-		runes.OneOf("bB"),
+	return runes.Join(
+		nom.Seq(
+			runes.Rune('\''),
+			nom.Opt(runes.OneOf("sS")),
+			runes.OneOf("bB"),
+		),
 	)(start)
 }
 
 func octalBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq3(
-		runes.Rune('\''),
-		nom.Opt(runes.OneOf("sS")),
-		runes.OneOf("oO"),
+	return runes.Join(
+		nom.Seq(
+			runes.Rune('\''),
+			nom.Opt(runes.OneOf("sS")),
+			runes.OneOf("oO"),
+		),
 	)(start)
 }
 
 func hexBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq3(
-		runes.Rune('\''),
-		nom.Opt(runes.OneOf("sS")),
-		runes.OneOf("hH"),
+	return runes.Join(
+		nom.Seq(
+			runes.Rune('\''),
+			nom.Opt(runes.OneOf("sS")),
+			runes.OneOf("hH"),
+		),
 	)(start)
 }
 
@@ -252,5 +264,5 @@ func UnbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Unbas
 }
 
 func unbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.RecognizeSeq(runes.Rune('\''), runes.OneOf("01xXzZ"))(start)
+	return runes.Join(nom.Seq(runes.Rune('\''), runes.OneOf("01xXzZ")))(start)
 }
