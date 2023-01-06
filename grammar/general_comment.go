@@ -4,12 +4,13 @@ import (
 	"context"
 
 	"github.com/jtdubs/go-nom"
+	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
 func Comment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
-	return nom.Alt(
+	return fn.Alt(
 		To[ast.Comment](BlockComment),
 		To[ast.Comment](OneLineComment),
 	)(ctx, start)
@@ -17,16 +18,16 @@ func Comment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast
 
 func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
 	res := &ast.BlockComment{}
-	return Bake(nom.Value(res,
+	return Bake(fn.Value(res,
 		BindSpan(&res.Span,
-			nom.Seq(
+			fn.Seq(
 				BindSpan(&res.StartT, runes.Tag("/*")),
 				BindSpan(&res.TextT,
 					runes.Join(
-						nom.First(
-							nom.ManyTill(
-								nom.Any[rune],
-								nom.Peek(runes.Tag("*/")),
+						fn.First(
+							fn.ManyTill(
+								fn.Any[rune],
+								fn.Peek(runes.Tag("*/")),
 							),
 						),
 					),
@@ -39,16 +40,16 @@ func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune]
 
 func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
 	res := &ast.OneLineComment{}
-	return Bake(nom.Value(res,
+	return Bake(fn.Value(res,
 		BindSpan(&res.Span,
-			nom.Seq(
+			fn.Seq(
 				BindSpan(&res.StartT, runes.Tag("//")),
 				BindSpan(&res.TextT,
 					runes.Join(
-						nom.First(
-							nom.ManyTill(
-								nom.Any[rune],
-								nom.Peek(runes.Newline),
+						fn.First(
+							fn.ManyTill(
+								fn.Any[rune],
+								fn.Peek(runes.Newline),
 							),
 						),
 					),

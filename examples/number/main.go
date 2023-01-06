@@ -17,7 +17,7 @@ func init() {
 func main() {
 	tracer := func() trace.Tracer[rune] {
 		var opts printtracer.Options[rune]
-		opts.IncludePackage("main")
+		// opts.IncludePackage("main")
 		return opts.Tracer()
 	}()
 	ctx := trace.WithTracing(trace.WithTracer(context.Background(), tracer))
