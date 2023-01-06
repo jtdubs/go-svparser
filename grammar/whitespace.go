@@ -23,7 +23,7 @@ func Whitespace(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Whitespace, error
 
 func Spaces(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Spaces, error) {
 	res := &ast.Spaces{}
-	return Bake(nom.Value(res, Bind(&res.Token, runes.Space0())))(start)
+	return Bake(nom.Value(res, Bind(&res.Token, runes.Space0)))(start)
 }
 
 func Comment(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
@@ -66,12 +66,12 @@ func OneLineComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComme
 						nom.First(
 							nom.ManyTill(
 								nom.Any[rune],
-								nom.Peek(runes.Newline()),
+								nom.Peek(runes.Newline),
 							),
 						),
 					),
 				),
-				Bind(&res.EndT, runes.Newline()),
+				Bind(&res.EndT, runes.Newline),
 			),
 		),
 	))(start)
