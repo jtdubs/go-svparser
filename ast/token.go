@@ -17,7 +17,3 @@ func (t Token) String() string {
 func (t Token) Value() string {
 	return string(t.Start.To(t.End))
 }
-
-type Bakeable interface {
-	Bake() error
-}

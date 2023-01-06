@@ -8,12 +8,15 @@ import (
 )
 
 func BindSpan[T any](t *nom.Span[rune], p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
+	return BindValue(t, nom.Spanning(p))
+}
+
+func BindValue[T any](t *T, p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 	return func(start nom.Cursor[rune]) (end nom.Cursor[rune], res struct{}, err error) {
-		res = struct{}{}
-		end, _, err = p(start)
+		var val T
+		end, val, err = p(start)
 		if err == nil {
-			t.Start = start
-			t.End = end
+			*t = val
 		}
 		return
 	}
