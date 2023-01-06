@@ -1,6 +1,7 @@
 package grammar
 
 import (
+	"context"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -11,6 +12,8 @@ import (
 )
 
 func TestWhitespace(t *testing.T) {
+	ctx := context.Background()
+
 	testCases := []struct {
 		in        string
 		want      any
@@ -31,7 +34,7 @@ func TestWhitespace(t *testing.T) {
 
 	for _, tc := range testCases {
 		c := runes.Cursor(tc.in)
-		gotRest, got, err := Whitespace(c)
+		gotRest, got, err := Whitespace(ctx, c)
 		gotError := (err != nil)
 
 		if gotError != tc.wantError {

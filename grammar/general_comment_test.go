@@ -1,6 +1,7 @@
 package grammar
 
 import (
+	"context"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -11,6 +12,8 @@ import (
 )
 
 func TestComment(t *testing.T) {
+	ctx := context.Background()
+
 	testCases := []struct {
 		in        string
 		want      any
@@ -29,7 +32,7 @@ func TestComment(t *testing.T) {
 
 	for _, tc := range testCases {
 		c := runes.Cursor(tc.in)
-		gotRest, got, err := Comment(c)
+		gotRest, got, err := Comment(ctx, c)
 		gotError := (err != nil)
 
 		if gotError != tc.wantError {

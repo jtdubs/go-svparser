@@ -1,37 +1,39 @@
 package grammar
 
 import (
+	"context"
+
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
-func Number(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Number, error) {
+func Number(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Number, error) {
 	return nom.Alt(
 		To[ast.Number](RealNumber),
 		To[ast.Number](IntegralNumber),
-	)(start)
+	)(ctx, start)
 }
 
-func IntegralNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegralNumber, error) {
+func IntegralNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegralNumber, error) {
 	return nom.Alt(
 		To[ast.IntegralNumber](octalNumber),
 		To[ast.IntegralNumber](binaryNumber),
 		To[ast.IntegralNumber](hexNumber),
 		To[ast.IntegralNumber](DecimalNumber),
-	)(start)
+	)(ctx, start)
 }
 
-func DecimalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.DecimalNumber, error) {
+func DecimalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.DecimalNumber, error) {
 	return nom.Alt(
 		To[ast.DecimalNumber](decimalNumberX),
 		To[ast.DecimalNumber](decimalNumberZ),
 		To[ast.DecimalNumber](decimalNumberUnsigned),
 		To[ast.DecimalNumber](UnsignedNumber),
-	)(start)
+	)(ctx, start)
 }
 
-func decimalNumberZ(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, error) {
+func decimalNumberZ(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, error) {
 	res := &ast.DecimalNumberZ{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -42,10 +44,10 @@ func decimalNumberZ(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumbe
 				nom.Discard(nom.Many0(runes.Rune('_'))),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }
 
-func decimalNumberX(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, error) {
+func decimalNumberX(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, error) {
 	res := &ast.DecimalNumberX{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -56,10 +58,10 @@ func decimalNumberX(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumbe
 				nom.Discard(nom.Many0(runes.Rune('_'))),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }
 
-func decimalNumberUnsigned(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberUnsigned, error) {
+func decimalNumberUnsigned(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberUnsigned, error) {
 	res := &ast.DecimalNumberUnsigned{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -69,10 +71,10 @@ func decimalNumberUnsigned(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Decim
 				BindSpan(&res.ValueT, unsignedNumber),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }
 
-func binaryNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, error) {
+func binaryNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, error) {
 	res := &ast.BinaryNumber{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -82,10 +84,10 @@ func binaryNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, 
 				BindSpan(&res.ValueT, binaryValue),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }
 
-func octalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error) {
+func octalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error) {
 	res := &ast.OctalNumber{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -95,10 +97,10 @@ func octalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, er
 				BindSpan(&res.ValueT, octalValue),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }
 
-func hexNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
+func hexNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
 	res := &ast.HexNumber{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -108,35 +110,35 @@ func hexNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error)
 				BindSpan(&res.ValueT, hexValue),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }
 
 var sign = runes.Recognize(runes.OneOf("+-"))
 
-func size(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return nonZeroUnsignedNumber(start)
+func size(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+	return nonZeroUnsignedNumber(ctx, start)
 }
 
-func nonZeroUnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func nonZeroUnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Cons(
 		nonZeroDecimalDigit,
 		runes.Join(nom.Many0(nom.Alt(decimalDigit, runes.Rune('_')))),
-	)(start)
+	)(ctx, start)
 }
 
-func RealNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.RealNumber, error) {
+func RealNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.RealNumber, error) {
 	return nom.Alt(
 		To[ast.RealNumber](FloatingPointNumber),
 		To[ast.RealNumber](FixedPointNumber),
-	)(start)
+	)(ctx, start)
 }
 
-func FloatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FloatingPointNumber, error) {
+func FloatingPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FloatingPointNumber, error) {
 	res := &ast.FloatingPointNumber{}
-	return Bake(nom.Value(res, BindSpan(&res.Span, floatingPointNumber)))(start)
+	return Bake(nom.Value(res, BindSpan(&res.Span, floatingPointNumber)))(ctx, start)
 }
 
-func floatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func floatingPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Concat(
 		nom.Seq(
 			unsignedNumber,
@@ -145,97 +147,97 @@ func floatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, erro
 			nom.Opt(sign),
 			unsignedNumber,
 		),
-	)(start)
+	)(ctx, start)
 }
 
-func FixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPointNumber, error) {
+func FixedPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPointNumber, error) {
 	res := &ast.FixedPointNumber{}
-	return Bake(nom.Value(res, BindSpan(&res.Span, fixedPointNumber)))(start)
+	return Bake(nom.Value(res, BindSpan(&res.Span, fixedPointNumber)))(ctx, start)
 }
 
-func fixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func fixedPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Concat(
 		nom.Seq(
 			unsignedNumber,
 			runes.Tag("."),
 			unsignedNumber,
 		),
-	)(start)
+	)(ctx, start)
 }
 
 var exp = runes.Recognize(runes.OneOf("eE"))
 
-func UnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
+func UnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
 	res := &ast.UnsignedNumber{}
-	return Bake(nom.Value(res, BindSpan(&res.Span, unsignedNumber)))(start)
+	return Bake(nom.Value(res, BindSpan(&res.Span, unsignedNumber)))(ctx, start)
 }
 
-func unsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func unsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Cons(
 		decimalDigit,
 		runes.Join(nom.Many0(nom.Alt(decimalDigit, runes.Rune('_')))),
-	)(start)
+	)(ctx, start)
 }
 
-func binaryValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func binaryValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Cons(
 		binaryDigit,
 		runes.Join(nom.Many0(nom.Alt(binaryDigit, runes.Rune('_')))),
-	)(start)
+	)(ctx, start)
 }
 
-func octalValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func octalValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Cons(
 		octalDigit,
 		runes.Join(nom.Many0(nom.Alt(octalDigit, runes.Rune('_')))),
-	)(start)
+	)(ctx, start)
 }
 
-func hexValue(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func hexValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Cons(
 		hexDigit,
 		runes.Join(nom.Many0(nom.Alt(hexDigit, runes.Rune('_')))),
-	)(start)
+	)(ctx, start)
 }
 
-func decimalBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func decimalBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Join(
 		nom.Seq(
 			runes.Rune('\''),
 			nom.Opt(runes.OneOf("sS")),
 			runes.OneOf("dD"),
 		),
-	)(start)
+	)(ctx, start)
 }
 
-func binaryBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func binaryBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Join(
 		nom.Seq(
 			runes.Rune('\''),
 			nom.Opt(runes.OneOf("sS")),
 			runes.OneOf("bB"),
 		),
-	)(start)
+	)(ctx, start)
 }
 
-func octalBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func octalBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Join(
 		nom.Seq(
 			runes.Rune('\''),
 			nom.Opt(runes.OneOf("sS")),
 			runes.OneOf("oO"),
 		),
-	)(start)
+	)(ctx, start)
 }
 
-func hexBase(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+func hexBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return runes.Join(
 		nom.Seq(
 			runes.Rune('\''),
 			nom.Opt(runes.OneOf("sS")),
 			runes.OneOf("hH"),
 		),
-	)(start)
+	)(ctx, start)
 }
 
 var nonZeroDecimalDigit = runes.OneOf("123456789")
@@ -246,11 +248,11 @@ var hexDigit = runes.OneOf("0123456789abcdefABCDEFxXzZ?")
 var xDigit = runes.OneOf("xX")
 var zDigit = runes.OneOf("zZ?")
 
-func UnbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnbasedUnsizedLiteral, error) {
+func UnbasedUnsizedLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnbasedUnsizedLiteral, error) {
 	res := &ast.UnbasedUnsizedLiteral{}
-	return nom.Value(res, BindSpan(&res.Span, unbasedUnsizedLiteral))(start)
+	return nom.Value(res, BindSpan(&res.Span, unbasedUnsizedLiteral))(ctx, start)
 }
 
-func unbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return runes.Join(nom.Seq(runes.Rune('\''), runes.OneOf("01xXzZ")))(start)
+func unbasedUnsizedLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
+	return runes.Join(nom.Seq(runes.Rune('\''), runes.OneOf("01xXzZ")))(ctx, start)
 }

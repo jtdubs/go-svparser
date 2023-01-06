@@ -1,6 +1,7 @@
 package grammar
 
 import (
+	"context"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -11,6 +12,8 @@ import (
 )
 
 func TestNumber(t *testing.T) {
+	ctx := context.Background()
+
 	testCases := []struct {
 		in        string
 		want      any
@@ -65,7 +68,7 @@ func TestNumber(t *testing.T) {
 
 	for _, tc := range testCases {
 		c := runes.Cursor(tc.in)
-		gotRest, got, err := Number(c)
+		gotRest, got, err := Number(ctx, c)
 		gotError := (err != nil)
 
 		if gotError != tc.wantError {

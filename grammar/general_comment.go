@@ -1,19 +1,21 @@
 package grammar
 
 import (
+	"context"
+
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
-func Comment(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
+func Comment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
 	return nom.Alt(
 		To[ast.Comment](BlockComment),
 		To[ast.Comment](OneLineComment),
-	)(start)
+	)(ctx, start)
 }
 
-func BlockComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
+func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
 	res := &ast.BlockComment{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -32,10 +34,10 @@ func BlockComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, 
 				BindSpan(&res.EndT, runes.Tag("*/")),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }
 
-func OneLineComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
+func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
 	res := &ast.OneLineComment{}
 	return Bake(nom.Value(res,
 		BindSpan(&res.Span,
@@ -54,5 +56,5 @@ func OneLineComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComme
 				BindSpan(&res.EndT, runes.Newline),
 			),
 		),
-	))(start)
+	))(ctx, start)
 }

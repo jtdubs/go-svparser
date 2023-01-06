@@ -1,6 +1,7 @@
 package grammar
 
 import (
+	"context"
 	"reflect"
 
 	"github.com/jtdubs/go-nom"
@@ -12,9 +13,9 @@ func BindSpan[T any](t *nom.Span[rune], p nom.ParseFn[rune, T]) nom.ParseFn[rune
 }
 
 func BindValue[T any](t *T, p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
-	return func(start nom.Cursor[rune]) (end nom.Cursor[rune], res struct{}, err error) {
+	return func(ctx context.Context, start nom.Cursor[rune]) (end nom.Cursor[rune], res struct{}, err error) {
 		var val T
-		end, val, err = p(start)
+		end, val, err = p(ctx, start)
 		if err == nil {
 			*t = val
 		}
@@ -29,8 +30,8 @@ func To[O, I any](p nom.ParseFn[rune, I]) nom.ParseFn[rune, O] {
 }
 
 func Bake[T ast.Bakeable](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
-	return func(start nom.Cursor[rune]) (end nom.Cursor[rune], res T, err error) {
-		end, res, err = p(start)
+	return func(ctx context.Context, start nom.Cursor[rune]) (end nom.Cursor[rune], res T, err error) {
+		end, res, err = p(ctx, start)
 		if err == nil {
 			err = res.Bake()
 		}
