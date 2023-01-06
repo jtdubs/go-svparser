@@ -2,6 +2,8 @@ package ast
 
 import (
 	"fmt"
+
+	"github.com/jtdubs/go-nom"
 )
 
 type Whitespace interface {
@@ -30,7 +32,7 @@ type Comment interface {
 
 type OneLineComment struct {
 	Token
-	StartT, EndT, TextT Token
+	StartT, EndT, TextT nom.Span[rune]
 	Text                string
 }
 
@@ -39,7 +41,7 @@ func (c *OneLineComment) String() string {
 }
 
 func (c *OneLineComment) Bake() error {
-	c.Text = c.TextT.Value()
+	c.Text = string(c.TextT.Value())
 	return nil
 }
 
@@ -48,7 +50,7 @@ func (*OneLineComment) isWhitespace() {}
 
 type BlockComment struct {
 	Token
-	StartT, EndT, TextT Token
+	StartT, EndT, TextT nom.Span[rune]
 	Text                string
 }
 
@@ -57,7 +59,7 @@ func (c *BlockComment) String() string {
 }
 
 func (c *BlockComment) Bake() error {
-	c.Text = c.TextT.Value()
+	c.Text = string(c.TextT.Value())
 	return nil
 }
 

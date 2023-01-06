@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-svparser/ast"
 )
@@ -47,7 +48,7 @@ func TestWhitespace(t *testing.T) {
 			continue
 		}
 
-		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{})); diff != "" {
+		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
 			t.Errorf("Whitespace(%q) = %v, want %v", tc.in, got, tc.want)
 			continue
 		}
@@ -90,7 +91,7 @@ func TestComment(t *testing.T) {
 			continue
 		}
 
-		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{})); diff != "" {
+		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
 			t.Errorf("Comment(%q) = %v, want %v", tc.in, got, tc.want)
 			continue
 		}

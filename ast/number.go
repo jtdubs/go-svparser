@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/jtdubs/go-nom"
 )
 
 type Number interface {
@@ -22,7 +24,7 @@ type DecimalNumber interface {
 
 type DecimalNumberUnsigned struct {
 	Token
-	SizeT, BaseT, ValueT Token
+	SizeT, BaseT, ValueT nom.Span[rune]
 	Size                 uint
 	Value                uint64
 }
@@ -47,7 +49,7 @@ func (*DecimalNumberUnsigned) isNumber()         {}
 
 type DecimalNumberX struct {
 	Token
-	SizeT, BaseT, X Token
+	SizeT, BaseT, X nom.Span[rune]
 	Size            uint
 }
 
@@ -70,7 +72,7 @@ func (*DecimalNumberX) isNumber()         {}
 
 type DecimalNumberZ struct {
 	Token
-	SizeT, BaseT, Z Token
+	SizeT, BaseT, Z nom.Span[rune]
 	Size            uint
 }
 
@@ -93,7 +95,7 @@ func (*DecimalNumberZ) isNumber()         {}
 
 type BinaryNumber struct {
 	Token
-	SizeT, BaseT, ValueT Token
+	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
 
@@ -115,7 +117,7 @@ func (*BinaryNumber) isNumber()         {}
 
 type OctalNumber struct {
 	Token
-	SizeT, BaseT, ValueT Token
+	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
 
@@ -137,7 +139,7 @@ func (*OctalNumber) isNumber()         {}
 
 type HexNumber struct {
 	Token
-	SizeT, BaseT, ValueT Token
+	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
 
@@ -213,7 +215,7 @@ func (d *UnsignedNumber) String() string {
 }
 
 func (d *UnsignedNumber) Bake() error {
-	val, err := parseUint(d.Token, 10, 64)
+	val, err := parseUint(d.Span, 10, 64)
 	if err != nil {
 		return err
 	}
@@ -233,8 +235,8 @@ func (d *UnbasedUnsizedLiteral) String() string {
 	return fmt.Sprintf("UnbasedUnsizedLiteral(%v)", d.Token)
 }
 
-func parseUint(t Token, base, size int) (uint64, error) {
-	s := strings.ReplaceAll(t.Value(), "_", "")
+func parseUint(t nom.Span[rune], base, size int) (uint64, error) {
+	s := strings.ReplaceAll(string(t.Value()), "_", "")
 	return strconv.ParseUint(s, base, size)
 }
 
@@ -248,8 +250,8 @@ type MaskedInt struct {
 	V, X, Z    uint64
 }
 
-func NewMaskedInt(t Token, base, size int) (result MaskedInt, err error) {
-	s := strings.ReplaceAll(t.Value(), "_", "")
+func NewMaskedInt(t nom.Span[rune], base, size int) (result MaskedInt, err error) {
+	s := strings.ReplaceAll(string(t.Value()), "_", "")
 
 	var max rune
 	switch base {

@@ -7,15 +7,7 @@ import (
 	"github.com/jtdubs/go-svparser/ast"
 )
 
-// func Phrase[T any](ps ...nom.ParseFn[rune, T]) nom.ParseFn[rune, []T] {
-// 	var parts []nom.ParseFn[rune, T]
-// 	for _, p := range ps {
-// 		parts = append(parts, nom.Preceded(nom.Many0(nom.Alt(runes.Space0(), Comment)), p))
-// 	}
-// 	return nom.Trace(nom.Seq(parts...))
-// }
-
-func Bind[T any](t *ast.Token, p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
+func BindSpan[T any](t *nom.Span[rune], p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 	return func(start nom.Cursor[rune]) (end nom.Cursor[rune], res struct{}, err error) {
 		res = struct{}{}
 		end, _, err = p(start)

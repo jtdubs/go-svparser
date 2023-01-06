@@ -23,7 +23,7 @@ func Whitespace(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Whitespace, error
 
 func Spaces(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Spaces, error) {
 	res := &ast.Spaces{}
-	return Bake(nom.Value(res, Bind(&res.Token, runes.Space0)))(start)
+	return Bake(nom.Value(res, BindSpan(&res.Span, runes.Space0)))(start)
 }
 
 func Comment(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
@@ -36,10 +36,10 @@ func Comment(start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
 func BlockComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
 	res := &ast.BlockComment{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				Bind(&res.StartT, runes.Tag("/*")),
-				Bind(&res.TextT,
+				BindSpan(&res.StartT, runes.Tag("/*")),
+				BindSpan(&res.TextT,
 					runes.Join(
 						nom.First(
 							nom.ManyTill(
@@ -49,7 +49,7 @@ func BlockComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, 
 						),
 					),
 				),
-				Bind(&res.EndT, runes.Tag("*/")),
+				BindSpan(&res.EndT, runes.Tag("*/")),
 			),
 		),
 	))(start)
@@ -58,10 +58,10 @@ func BlockComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, 
 func OneLineComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
 	res := &ast.OneLineComment{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				Bind(&res.StartT, runes.Tag("//")),
-				Bind(&res.TextT,
+				BindSpan(&res.StartT, runes.Tag("//")),
+				BindSpan(&res.TextT,
 					runes.Join(
 						nom.First(
 							nom.ManyTill(
@@ -71,7 +71,7 @@ func OneLineComment(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComme
 						),
 					),
 				),
-				Bind(&res.EndT, runes.Newline),
+				BindSpan(&res.EndT, runes.Newline),
 			),
 		),
 	))(start)

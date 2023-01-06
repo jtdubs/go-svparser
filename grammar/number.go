@@ -34,11 +34,11 @@ func DecimalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.DecimalNumber,
 func decimalNumberZ(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, error) {
 	res := &ast.DecimalNumberZ{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				nom.Opt(Bind(&res.SizeT, size)),
-				Bind(&res.BaseT, decimalBase),
-				Bind(&res.Z, zDigit),
+				nom.Opt(BindSpan(&res.SizeT, size)),
+				BindSpan(&res.BaseT, decimalBase),
+				BindSpan(&res.Z, zDigit),
 				nom.Discard(nom.Many0(runes.Rune('_'))),
 			),
 		),
@@ -48,11 +48,11 @@ func decimalNumberZ(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumbe
 func decimalNumberX(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, error) {
 	res := &ast.DecimalNumberX{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				nom.Opt(Bind(&res.SizeT, size)),
-				Bind(&res.BaseT, decimalBase),
-				Bind(&res.X, xDigit),
+				nom.Opt(BindSpan(&res.SizeT, size)),
+				BindSpan(&res.BaseT, decimalBase),
+				BindSpan(&res.X, xDigit),
 				nom.Discard(nom.Many0(runes.Rune('_'))),
 			),
 		),
@@ -62,11 +62,11 @@ func decimalNumberX(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumbe
 func decimalNumberUnsigned(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberUnsigned, error) {
 	res := &ast.DecimalNumberUnsigned{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				nom.Opt(Bind(&res.SizeT, size)),
-				Bind(&res.BaseT, decimalBase),
-				Bind(&res.ValueT, unsignedNumber),
+				nom.Opt(BindSpan(&res.SizeT, size)),
+				BindSpan(&res.BaseT, decimalBase),
+				BindSpan(&res.ValueT, unsignedNumber),
 			),
 		),
 	))(start)
@@ -75,11 +75,11 @@ func decimalNumberUnsigned(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Decim
 func binaryNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, error) {
 	res := &ast.BinaryNumber{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				nom.Opt(Bind(&res.SizeT, size)),
-				Bind(&res.BaseT, binaryBase),
-				Bind(&res.ValueT, binaryValue),
+				nom.Opt(BindSpan(&res.SizeT, size)),
+				BindSpan(&res.BaseT, binaryBase),
+				BindSpan(&res.ValueT, binaryValue),
 			),
 		),
 	))(start)
@@ -88,11 +88,11 @@ func binaryNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, 
 func octalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error) {
 	res := &ast.OctalNumber{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				nom.Opt(Bind(&res.SizeT, size)),
-				Bind(&res.BaseT, octalBase),
-				Bind(&res.ValueT, octalValue),
+				nom.Opt(BindSpan(&res.SizeT, size)),
+				BindSpan(&res.BaseT, octalBase),
+				BindSpan(&res.ValueT, octalValue),
 			),
 		),
 	))(start)
@@ -101,11 +101,11 @@ func octalNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, er
 func hexNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
 	res := &ast.HexNumber{}
 	return Bake(nom.Value(res,
-		Bind(&res.Token,
+		BindSpan(&res.Span,
 			nom.Seq(
-				nom.Opt(Bind(&res.SizeT, size)),
-				Bind(&res.BaseT, hexBase),
-				Bind(&res.ValueT, hexValue),
+				nom.Opt(BindSpan(&res.SizeT, size)),
+				BindSpan(&res.BaseT, hexBase),
+				BindSpan(&res.ValueT, hexValue),
 			),
 		),
 	))(start)
@@ -133,7 +133,7 @@ func RealNumber(start nom.Cursor[rune]) (nom.Cursor[rune], ast.RealNumber, error
 
 func FloatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FloatingPointNumber, error) {
 	res := &ast.FloatingPointNumber{}
-	return Bake(nom.Value(res, Bind(&res.Token, floatingPointNumber)))(start)
+	return Bake(nom.Value(res, BindSpan(&res.Span, floatingPointNumber)))(start)
 }
 
 func floatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
@@ -150,7 +150,7 @@ func floatingPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, erro
 
 func FixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPointNumber, error) {
 	res := &ast.FixedPointNumber{}
-	return Bake(nom.Value(res, Bind(&res.Token, fixedPointNumber)))(start)
+	return Bake(nom.Value(res, BindSpan(&res.Span, fixedPointNumber)))(start)
 }
 
 func fixedPointNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
@@ -167,7 +167,7 @@ var exp = runes.Recognize(runes.OneOf("eE"))
 
 func UnsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
 	res := &ast.UnsignedNumber{}
-	return Bake(nom.Value(res, Bind(&res.Token, unsignedNumber)))(start)
+	return Bake(nom.Value(res, BindSpan(&res.Span, unsignedNumber)))(start)
 }
 
 func unsignedNumber(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
@@ -248,7 +248,7 @@ var zDigit = runes.OneOf("zZ?")
 
 func UnbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnbasedUnsizedLiteral, error) {
 	res := &ast.UnbasedUnsizedLiteral{}
-	return nom.Value(res, Bind(&res.Token, unbasedUnsizedLiteral))(start)
+	return nom.Value(res, BindSpan(&res.Span, unbasedUnsizedLiteral))(start)
 }
 
 func unbasedUnsizedLiteral(start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
