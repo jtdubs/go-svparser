@@ -6,7 +6,9 @@ import (
 	"github.com/jtdubs/go-nom"
 )
 
-type Token nom.Span[rune]
+type Token struct {
+	nom.Span[rune]
+}
 
 func (t Token) String() string {
 	return fmt.Sprintf("Token(%q)", string(t.Start.To(t.End)))

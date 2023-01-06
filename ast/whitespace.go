@@ -4,6 +4,26 @@ import (
 	"fmt"
 )
 
+type Whitespace interface {
+	isWhitespace()
+}
+
+type Spaces struct {
+	Token
+	Text string
+}
+
+func (c *Spaces) String() string {
+	return fmt.Sprintf("Spaces(%q)", c.Text)
+}
+
+func (c *Spaces) Bake() error {
+	c.Text = c.Token.Value()
+	return nil
+}
+
+func (*Spaces) isWhitespace() {}
+
 type Comment interface {
 	isComment()
 }
@@ -23,7 +43,8 @@ func (c *OneLineComment) Bake() error {
 	return nil
 }
 
-func (*OneLineComment) isComment() {}
+func (*OneLineComment) isComment()    {}
+func (*OneLineComment) isWhitespace() {}
 
 type BlockComment struct {
 	Token
@@ -40,4 +61,5 @@ func (c *BlockComment) Bake() error {
 	return nil
 }
 
-func (*BlockComment) isComment() {}
+func (*BlockComment) isComment()    {}
+func (*BlockComment) isWhitespace() {}
