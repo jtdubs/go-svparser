@@ -308,6 +308,8 @@ func (m MaskedInt) String() string {
 		width, mask, baseChar = 3, 7, 'o'
 	case 16:
 		width, mask, baseChar = 4, 15, 'h'
+	default:
+		return "unbaked"
 	}
 
 	chars := m.Size / width

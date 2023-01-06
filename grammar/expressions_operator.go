@@ -6,12 +6,13 @@ import (
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
+	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
 func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryOperator, error) {
 	res := &ast.UnaryOperator{}
-	return fn.Value(res, BindSpan(&res.Span,
+	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
 		BindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.UnaryNand, runes.Tag("~&")),
@@ -27,5 +28,5 @@ func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
 				fn.Value(ast.UnaryBinaryNot, runes.Tag("~")),
 			),
 		),
-	))(ctx, start)
+	)))(ctx, start)
 }
