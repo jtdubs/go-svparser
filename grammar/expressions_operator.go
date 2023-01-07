@@ -11,8 +11,8 @@ import (
 
 func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryOperator, error) {
 	res := &ast.UnaryOperator{}
-	return TBind(res, &res.Span,
-		BindValue(&res.Op,
+	return tBind(res, &res.Span,
+		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.UnaryLogicalReductionNand, runes.Tag("~&")),
 				fn.Value(ast.UnaryLogicalReductionNor, runes.Tag("~|")),
@@ -32,8 +32,8 @@ func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
 
 func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryOperator, error) {
 	res := &ast.BinaryOperator{}
-	return TBind(res, &res.Span,
-		BindValue(&res.Op,
+	return tBind(res, &res.Span,
+		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.BinaryArithmeticShiftLeft, runes.Tag("<<<")),
 				fn.Value(ast.BinaryArithmeticShiftRight, runes.Tag(">>>")),
@@ -71,8 +71,8 @@ func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 
 func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IncOrDecOperator, error) {
 	res := &ast.IncOrDecOperator{}
-	return TBind(res, &res.Span,
-		BindValue(&res.Op,
+	return tBind(res, &res.Span,
+		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.Inc, runes.Tag("++")),
 				fn.Value(ast.Dec, runes.Tag("--")),
@@ -83,8 +83,8 @@ func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
 
 func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryModulePathOperator, error) {
 	res := &ast.UnaryModulePathOperator{}
-	return TBind(res, &res.Span,
-		BindValue(&res.Op,
+	return tBind(res, &res.Span,
+		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.UnaryLogicalReductionNand, runes.Tag("~&")),
 				fn.Value(ast.UnaryLogicalReductionNor, runes.Tag("~|")),
@@ -102,8 +102,8 @@ func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.C
 
 func BinaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryModulePathOperator, error) {
 	res := &ast.BinaryModulePathOperator{}
-	return TBind(res, &res.Span,
-		BindValue(&res.Op,
+	return tBind(res, &res.Span,
+		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.BinaryBitwiseXnor, runes.Tag("^~")),
 				fn.Value(ast.BinaryBitwiseXnor, runes.Tag("~^")),

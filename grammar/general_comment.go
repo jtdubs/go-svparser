@@ -12,16 +12,16 @@ import (
 
 func Comment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
 	return trace.Trace(fn.Alt(
-		To[ast.Comment](BlockComment),
-		To[ast.Comment](OneLineComment),
+		to[ast.Comment](BlockComment),
+		to[ast.Comment](OneLineComment),
 	))(ctx, start)
 }
 
 func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
 	res := &ast.BlockComment{}
-	return TBindSeq(res, &res.Span,
-		BindSpan(&res.StartT, runes.Tag("/*")),
-		BindSpan(&res.TextT,
+	return tBindSeq(res, &res.Span,
+		bindSpan(&res.StartT, runes.Tag("/*")),
+		bindSpan(&res.TextT,
 			runes.Join(
 				fn.First(
 					fn.ManyTill(
@@ -31,15 +31,15 @@ func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune]
 				),
 			),
 		),
-		BindSpan(&res.EndT, runes.Tag("*/")),
+		bindSpan(&res.EndT, runes.Tag("*/")),
 	)(ctx, start)
 }
 
 func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
 	res := &ast.OneLineComment{}
-	return TBindSeq(res, &res.Span,
-		BindSpan(&res.StartT, runes.Tag("//")),
-		BindSpan(&res.TextT,
+	return tBindSeq(res, &res.Span,
+		bindSpan(&res.StartT, runes.Tag("//")),
+		bindSpan(&res.TextT,
 			runes.Join(
 				fn.First(
 					fn.ManyTill(
@@ -49,6 +49,6 @@ func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 				),
 			),
 		),
-		BindSpan(&res.EndT, runes.Newline),
+		bindSpan(&res.EndT, runes.Newline),
 	)(ctx, start)
 }

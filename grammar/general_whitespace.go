@@ -20,12 +20,12 @@ func Whitespace1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune],
 
 func Whitespace(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Whitespace, error) {
 	return trace.Trace(fn.Alt(
-		To[ast.Whitespace](Comment),
-		To[ast.Whitespace](Spaces),
+		to[ast.Whitespace](Comment),
+		to[ast.Whitespace](Spaces),
 	))(ctx, start)
 }
 
 func Spaces(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Spaces, error) {
 	res := &ast.Spaces{}
-	return trace.Trace(Bake(fn.Value(res, BindSpan(&res.Span, runes.Space0))))(ctx, start)
+	return trace.Trace(bake(fn.Value(res, bindSpan(&res.Span, runes.Space0))))(ctx, start)
 }

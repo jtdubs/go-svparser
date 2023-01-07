@@ -12,82 +12,82 @@ import (
 
 func Number(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Number, error) {
 	return trace.Trace(fn.Alt(
-		To[ast.Number](RealNumber),
-		To[ast.Number](IntegralNumber),
+		to[ast.Number](RealNumber),
+		to[ast.Number](IntegralNumber),
 	))(ctx, start)
 }
 
 func IntegralNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegralNumber, error) {
 	return trace.Trace(fn.Alt(
-		To[ast.IntegralNumber](octalNumber),
-		To[ast.IntegralNumber](binaryNumber),
-		To[ast.IntegralNumber](hexNumber),
-		To[ast.IntegralNumber](DecimalNumber),
+		to[ast.IntegralNumber](octalNumber),
+		to[ast.IntegralNumber](binaryNumber),
+		to[ast.IntegralNumber](hexNumber),
+		to[ast.IntegralNumber](DecimalNumber),
 	))(ctx, start)
 }
 
 func DecimalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.DecimalNumber, error) {
 	return trace.Trace(fn.Alt(
-		To[ast.DecimalNumber](decimalNumberX),
-		To[ast.DecimalNumber](decimalNumberZ),
-		To[ast.DecimalNumber](decimalNumberUnsigned),
-		To[ast.DecimalNumber](UnsignedNumber),
+		to[ast.DecimalNumber](decimalNumberX),
+		to[ast.DecimalNumber](decimalNumberZ),
+		to[ast.DecimalNumber](decimalNumberUnsigned),
+		to[ast.DecimalNumber](UnsignedNumber),
 	))(ctx, start)
 }
 
 func decimalNumberZ(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, error) {
 	res := &ast.DecimalNumberZ{}
-	return TBindSeq(res, &res.Span,
-		fn.Opt(BindSpan(&res.SizeT, size)),
-		BindSpan(&res.BaseT, decimalBase),
-		BindSpan(&res.Z, zDigit),
+	return tBindSeq(res, &res.Span,
+		fn.Opt(bindSpan(&res.SizeT, size)),
+		bindSpan(&res.BaseT, decimalBase),
+		bindSpan(&res.Z, zDigit),
 		fn.Discard(fn.Many0(runes.Rune('_'))),
 	)(ctx, start)
 }
 
 func decimalNumberX(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, error) {
 	res := &ast.DecimalNumberX{}
-	return TBindSeq(res, &res.Span,
-		fn.Opt(BindSpan(&res.SizeT, size)),
-		BindSpan(&res.BaseT, decimalBase),
-		BindSpan(&res.X, xDigit),
+	return tBindSeq(res, &res.Span,
+		fn.Opt(bindSpan(&res.SizeT, size)),
+		bindSpan(&res.BaseT, decimalBase),
+		bindSpan(&res.X, xDigit),
 		fn.Discard(fn.Many0(runes.Rune('_'))),
 	)(ctx, start)
 }
 
 func decimalNumberUnsigned(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberUnsigned, error) {
 	res := &ast.DecimalNumberUnsigned{}
-	return TBindSeq(res, &res.Span,
-		fn.Opt(BindSpan(&res.SizeT, size)),
-		BindSpan(&res.BaseT, decimalBase),
-		BindSpan(&res.ValueT, unsignedNumber),
+	return tBindSeq(res, &res.Span,
+		fn.Opt(bindSpan(&res.SizeT, size)),
+		bindSpan(&res.BaseT, decimalBase),
+		bindSpan(&res.ValueT, unsignedNumber),
 	)(ctx, start)
 }
 
 func binaryNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, error) {
 	res := &ast.BinaryNumber{}
-	return TBindSeq(res, &res.Span,
-		fn.Opt(BindSpan(&res.SizeT, size)),
-		BindSpan(&res.BaseT, binaryBase),
-		BindSpan(&res.ValueT, binaryValue),
+	return tBindSeq(res, &res.Span,
+		fn.Opt(bindSpan(&res.SizeT, size)),
+		bindSpan(&res.BaseT, binaryBase),
+		bindSpan(&res.ValueT, binaryValue),
 	)(ctx, start)
 }
 
 func octalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error) {
 	res := &ast.OctalNumber{}
-	return TBindSeq(res, &res.Span,
-		fn.Opt(BindSpan(&res.SizeT, size)),
-		BindSpan(&res.BaseT, octalBase),
-		BindSpan(&res.ValueT, octalValue),
+	return tBindSeq(res, &res.Span,
+		fn.Opt(bindSpan(&res.SizeT, size)),
+		bindSpan(&res.BaseT, octalBase),
+		bindSpan(&res.ValueT, octalValue),
 	)(ctx, start)
 }
 
 func hexNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
 	res := &ast.HexNumber{}
-	return TBindSeq(res, &res.Span,
-		fn.Opt(BindSpan(&res.SizeT, size)),
-		BindSpan(&res.BaseT, hexBase),
-		BindSpan(&res.ValueT, hexValue),
+	return tBindSeq(res, &res.Span,
+		fn.Opt(bindSpan(&res.SizeT, size)),
+		bindSpan(&res.BaseT, hexBase),
+		bindSpan(&res.ValueT, hexValue),
 	)(ctx, start)
 }
 
@@ -98,7 +98,7 @@ func size(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string
 }
 
 func nonZeroUnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TCons(
+	return tCons(
 		nonZeroDecimalDigit,
 		runes.Join(fn.Many0(decimalDigit_)),
 	)(ctx, start)
@@ -106,18 +106,18 @@ func nonZeroUnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cur
 
 func RealNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.RealNumber, error) {
 	return trace.Trace(fn.Alt(
-		To[ast.RealNumber](FloatingPointNumber),
-		To[ast.RealNumber](FixedPointNumber),
+		to[ast.RealNumber](FloatingPointNumber),
+		to[ast.RealNumber](FixedPointNumber),
 	))(ctx, start)
 }
 
 func FloatingPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FloatingPointNumber, error) {
 	res := &ast.FloatingPointNumber{}
-	return TBind(res, &res.Span, floatingPointNumber)(ctx, start)
+	return tBind(res, &res.Span, floatingPointNumber)(ctx, start)
 }
 
 func floatingPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TConcatSeq(
+	return tConcatSeq(
 		unsignedNumber,
 		fn.Opt(fn.Preceded(runes.Rune('.'), unsignedNumber)),
 		exp,
@@ -128,11 +128,11 @@ func floatingPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Curso
 
 func FixedPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPointNumber, error) {
 	res := &ast.FixedPointNumber{}
-	return TBind(res, &res.Span, fixedPointNumber)(ctx, start)
+	return tBind(res, &res.Span, fixedPointNumber)(ctx, start)
 }
 
 func fixedPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TConcatSeq(
+	return tConcatSeq(
 		unsignedNumber,
 		runes.Tag("."),
 		unsignedNumber,
@@ -143,39 +143,39 @@ var exp = runes.Recognize(runes.OneOf("eE"))
 
 func UnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
 	res := &ast.UnsignedNumber{}
-	return TBind(res, &res.Span, unsignedNumber)(ctx, start)
+	return tBind(res, &res.Span, unsignedNumber)(ctx, start)
 }
 
 func unsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TCons(
+	return tCons(
 		decimalDigit,
 		runes.Join(fn.Many0(decimalDigit_)),
 	)(ctx, start)
 }
 
 func binaryValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TCons(
+	return tCons(
 		binaryDigit,
 		runes.Join(fn.Many0(binaryDigit_)),
 	)(ctx, start)
 }
 
 func octalValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TCons(
+	return tCons(
 		octalDigit,
 		runes.Join(fn.Many0(octalDigit_)),
 	)(ctx, start)
 }
 
 func hexValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TCons(
+	return tCons(
 		hexDigit,
 		runes.Join(fn.Many0(hexDigit_)),
 	)(ctx, start)
 }
 
 func decimalBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TJoinSeq(
+	return tJoinSeq(
 		runes.Rune('\''),
 		fn.Opt(runes.OneOf("sS")),
 		runes.OneOf("dD"),
@@ -183,7 +183,7 @@ func decimalBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune],
 }
 
 func binaryBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TJoinSeq(
+	return tJoinSeq(
 		runes.Rune('\''),
 		fn.Opt(runes.OneOf("sS")),
 		runes.OneOf("bB"),
@@ -191,7 +191,7 @@ func binaryBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], 
 }
 
 func octalBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TJoinSeq(
+	return tJoinSeq(
 		runes.Rune('\''),
 		fn.Opt(runes.OneOf("sS")),
 		runes.OneOf("oO"),
@@ -199,7 +199,7 @@ func octalBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], s
 }
 
 func hexBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TJoinSeq(
+	return tJoinSeq(
 		runes.Rune('\''),
 		fn.Opt(runes.OneOf("sS")),
 		runes.OneOf("hH"),
@@ -220,9 +220,9 @@ var zDigit = runes.OneOf("zZ?")
 
 func UnbasedUnsizedLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnbasedUnsizedLiteral, error) {
 	res := &ast.UnbasedUnsizedLiteral{}
-	return TBind(res, &res.Span, unbasedUnsizedLiteral)(ctx, start)
+	return tBind(res, &res.Span, unbasedUnsizedLiteral)(ctx, start)
 }
 
 func unbasedUnsizedLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return TJoinSeq(runes.Rune('\''), runes.OneOf("01xXzZ"))(ctx, start)
+	return tJoinSeq(runes.Rune('\''), runes.OneOf("01xXzZ"))(ctx, start)
 }
