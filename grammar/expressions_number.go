@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jtdubs/go-nom"
+	"github.com/jtdubs/go-nom/cache"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-nom/trace"
@@ -175,10 +176,10 @@ func UnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 }
 
 func unsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
-	return trace.Trace(runes.Cons(
+	return trace.Trace(cache.Cache(runes.Cons(
 		decimalDigit,
 		runes.Join(fn.Many0(fn.Alt(decimalDigit, runes.Rune('_')))),
-	))(ctx, start)
+	)))(ctx, start)
 }
 
 func binaryValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
