@@ -23,19 +23,17 @@ func Identifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], 
 
 func escapedIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.EscapedIdentifier, error) {
 	res := &ast.EscapedIdentifier{}
-	return trace.Trace(Bake(fn.Value(res, BindSpan(&res.Span,
-		fn.Seq(
-			BindSpan(&res.SlashT, runes.Rune('\\')),
-			BindSpan(&res.NameT, fn.Terminated(fn.Many1(asciiPrintNonWS), fn.Peek(fn.Alt(runes.Space)))),
-		),
-	))))(ctx, start)
+	return TBindSeq(res, &res.Span,
+		BindSpan(&res.SlashT, runes.Rune('\\')),
+		BindSpan(&res.NameT, fn.Terminated(fn.Many1(asciiPrintNonWS), fn.Peek(fn.Alt(runes.Space)))),
+	)(ctx, start)
 }
 
 func simpleIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.SimpleIdentifier, error) {
 	res := &ast.SimpleIdentifier{}
-	return trace.Trace(Bake(fn.Value(res, BindSpan(&res.Span,
+	return TBind(res, &res.Span,
 		fn.Preceded(alpha_, fn.Many0(alphanumeric_S)),
-	))))(ctx, start)
+	)(ctx, start)
 }
 
 var asciiPrintNonWS = fn.Satisfy(func(r rune) bool {

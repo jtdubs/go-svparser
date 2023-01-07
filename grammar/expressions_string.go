@@ -12,7 +12,7 @@ import (
 
 func String(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.String, error) {
 	res := &ast.String{}
-	return trace.Trace(Bake(fn.Value(res, BindSpan(&res.Span, fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents)))))(ctx, start)
+	return TBind(res, &res.Span, fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents))(ctx, start)
 }
 
 func stringContents(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], []rune, error) {

@@ -6,13 +6,12 @@ import (
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
-	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
 func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryOperator, error) {
 	res := &ast.UnaryOperator{}
-	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+	return TBind(res, &res.Span,
 		BindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.UnaryLogicalReductionNand, runes.Tag("~&")),
@@ -28,12 +27,12 @@ func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
 				fn.Value(ast.UnaryLogicalReductionNot, runes.Tag("~")),
 			),
 		),
-	)))(ctx, start)
+	)(ctx, start)
 }
 
 func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryOperator, error) {
 	res := &ast.BinaryOperator{}
-	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+	return TBind(res, &res.Span,
 		BindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.BinaryArithmeticShiftLeft, runes.Tag("<<<")),
@@ -67,24 +66,24 @@ func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 				fn.Value(ast.BinaryBitwiseOr, runes.Tag("|")),
 			),
 		),
-	)))(ctx, start)
+	)(ctx, start)
 }
 
 func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IncOrDecOperator, error) {
 	res := &ast.IncOrDecOperator{}
-	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+	return TBind(res, &res.Span,
 		BindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.Inc, runes.Tag("++")),
 				fn.Value(ast.Dec, runes.Tag("--")),
 			),
 		),
-	)))(ctx, start)
+	)(ctx, start)
 }
 
 func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryModulePathOperator, error) {
 	res := &ast.UnaryModulePathOperator{}
-	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+	return TBind(res, &res.Span,
 		BindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.UnaryLogicalReductionNand, runes.Tag("~&")),
@@ -98,12 +97,12 @@ func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.C
 				fn.Value(ast.UnaryLogicalReductionNot, runes.Tag("~")),
 			),
 		),
-	)))(ctx, start)
+	)(ctx, start)
 }
 
 func BinaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryModulePathOperator, error) {
 	res := &ast.BinaryModulePathOperator{}
-	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+	return TBind(res, &res.Span,
 		BindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.BinaryBitwiseXnor, runes.Tag("^~")),
@@ -117,5 +116,5 @@ func BinaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.
 				fn.Value(ast.BinaryBitwiseOr, runes.Tag("|")),
 			),
 		),
-	)))(ctx, start)
+	)(ctx, start)
 }
