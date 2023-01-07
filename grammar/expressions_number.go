@@ -125,7 +125,7 @@ func size(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string
 func nonZeroUnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return trace.Trace(runes.Cons(
 		nonZeroDecimalDigit,
-		runes.Join(fn.Many0(fn.Alt(decimalDigit, runes.Rune('_')))),
+		runes.Join(fn.Many0(decimalDigit_)),
 	))(ctx, start)
 }
 
@@ -178,28 +178,28 @@ func UnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 func unsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return trace.Trace(cache.Cache(runes.Cons(
 		decimalDigit,
-		runes.Join(fn.Many0(fn.Alt(decimalDigit, runes.Rune('_')))),
+		runes.Join(fn.Many0(decimalDigit_)),
 	)))(ctx, start)
 }
 
 func binaryValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return trace.Trace(runes.Cons(
 		binaryDigit,
-		runes.Join(fn.Many0(fn.Alt(binaryDigit, runes.Rune('_')))),
+		runes.Join(fn.Many0(binaryDigit_)),
 	))(ctx, start)
 }
 
 func octalValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return trace.Trace(runes.Cons(
 		octalDigit,
-		runes.Join(fn.Many0(fn.Alt(octalDigit, runes.Rune('_')))),
+		runes.Join(fn.Many0(octalDigit_)),
 	))(ctx, start)
 }
 
 func hexValue(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], string, error) {
 	return trace.Trace(runes.Cons(
 		hexDigit,
-		runes.Join(fn.Many0(fn.Alt(hexDigit, runes.Rune('_')))),
+		runes.Join(fn.Many0(hexDigit_)),
 	))(ctx, start)
 }
 
@@ -245,9 +245,13 @@ func hexBase(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], str
 
 var nonZeroDecimalDigit = runes.OneOf("123456789")
 var decimalDigit = runes.OneOf("0123456789")
+var decimalDigit_ = runes.OneOf("0123456789_")
 var binaryDigit = runes.OneOf("01xXzZ?")
+var binaryDigit_ = runes.OneOf("01xXzZ?_")
 var octalDigit = runes.OneOf("01234567xXzZ?")
+var octalDigit_ = runes.OneOf("01234567xXzZ?_")
 var hexDigit = runes.OneOf("0123456789abcdefABCDEFxXzZ?")
+var hexDigit_ = runes.OneOf("0123456789abcdefABCDEFxXzZ?_")
 var xDigit = runes.OneOf("xX")
 var zDigit = runes.OneOf("zZ?")
 
