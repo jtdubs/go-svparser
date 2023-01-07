@@ -25,7 +25,7 @@ func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
 				fn.Value(ast.UnaryLogicalReductionAnd, runes.Tag("&")),
 				fn.Value(ast.UnaryLogicalReductionOr, runes.Tag("|")),
 				fn.Value(ast.UnaryLogicalReductionXor, runes.Tag("^")),
-				fn.Value(ast.UnaryLogicalNegation, runes.Tag("~")),
+				fn.Value(ast.UnaryLogicalReductionNot, runes.Tag("~")),
 			),
 		),
 	)))(ctx, start)
@@ -63,6 +63,56 @@ func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 				fn.Value(ast.BinaryMultiply, runes.Tag("*")),
 				fn.Value(ast.BinaryDivide, runes.Tag("/")),
 				fn.Value(ast.BinaryModulus, runes.Tag("%")),
+				fn.Value(ast.BinaryBitwiseAnd, runes.Tag("&")),
+				fn.Value(ast.BinaryBitwiseOr, runes.Tag("|")),
+			),
+		),
+	)))(ctx, start)
+}
+
+func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IncOrDecOperator, error) {
+	res := &ast.IncOrDecOperator{}
+	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+		BindValue(&res.Op,
+			fn.Alt(
+				fn.Value(ast.Inc, runes.Tag("++")),
+				fn.Value(ast.Dec, runes.Tag("--")),
+			),
+		),
+	)))(ctx, start)
+}
+
+func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryModulePathOperator, error) {
+	res := &ast.UnaryModulePathOperator{}
+	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+		BindValue(&res.Op,
+			fn.Alt(
+				fn.Value(ast.UnaryLogicalReductionNand, runes.Tag("~&")),
+				fn.Value(ast.UnaryLogicalReductionNor, runes.Tag("~|")),
+				fn.Value(ast.UnaryLogicalReductionXnor, runes.Tag("~^")),
+				fn.Value(ast.UnaryLogicalReductionXnor, runes.Tag("^~")),
+				fn.Value(ast.UnaryLogicalNegation, runes.Tag("!")),
+				fn.Value(ast.UnaryLogicalReductionAnd, runes.Tag("&")),
+				fn.Value(ast.UnaryLogicalReductionOr, runes.Tag("|")),
+				fn.Value(ast.UnaryLogicalReductionXor, runes.Tag("^")),
+				fn.Value(ast.UnaryLogicalReductionNot, runes.Tag("~")),
+			),
+		),
+	)))(ctx, start)
+}
+
+func BinaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryModulePathOperator, error) {
+	res := &ast.BinaryModulePathOperator{}
+	return trace.Trace(fn.Value(res, BindSpan(&res.Span,
+		BindValue(&res.Op,
+			fn.Alt(
+				fn.Value(ast.BinaryBitwiseXnor, runes.Tag("^~")),
+				fn.Value(ast.BinaryBitwiseXnor, runes.Tag("~^")),
+				fn.Value(ast.BinaryLogicalAnd, runes.Tag("&&")),
+				fn.Value(ast.BinaryLogicalOr, runes.Tag("||")),
+				fn.Value(ast.BinaryLogicalNotEquals, runes.Tag("!=")),
+				fn.Value(ast.BinaryLogicalEquals, runes.Tag("==")),
+				fn.Value(ast.BinaryBitwiseXor, runes.Tag("^")),
 				fn.Value(ast.BinaryBitwiseAnd, runes.Tag("&")),
 				fn.Value(ast.BinaryBitwiseOr, runes.Tag("|")),
 			),

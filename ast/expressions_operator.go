@@ -115,3 +115,42 @@ type BinaryOperator struct {
 func (b *BinaryOperator) String() string {
 	return fmt.Sprintf("BinaryOperator(%v)", binaryOperatorNames[b.Op])
 }
+
+type IncOrDecOperatorType int
+
+const (
+	Inc IncOrDecOperatorType = iota
+	Dec
+)
+
+var incOrDecOperatorNames = map[IncOrDecOperatorType]string{
+	Inc: "Inc",
+	Dec: "Dec",
+}
+
+type IncOrDecOperator struct {
+	nom.Span[rune]
+	Op IncOrDecOperatorType
+}
+
+func (b *IncOrDecOperator) String() string {
+	return fmt.Sprintf("IncOrDecOperator(%v)", incOrDecOperatorNames[b.Op])
+}
+
+type UnaryModulePathOperator struct {
+	nom.Span[rune]
+	Op UnaryOperatorType
+}
+
+func (b *UnaryModulePathOperator) String() string {
+	return fmt.Sprintf("UnaryModulePathOperator(%v)", unaryOperatorNames[b.Op])
+}
+
+type BinaryModulePathOperator struct {
+	nom.Span[rune]
+	Op BinaryOperatorType
+}
+
+func (b *BinaryModulePathOperator) String() string {
+	return fmt.Sprintf("BinaryModulePathOperator(%v)", binaryOperatorNames[b.Op])
+}

@@ -30,7 +30,7 @@ func TestUnaryOperator(t *testing.T) {
 		{in: "&", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionAnd}},
 		{in: "|", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionOr}},
 		{in: "^", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionXor}},
-		{in: "~", want: &ast.UnaryOperator{Op: ast.UnaryLogicalNegation}},
+		{in: "~", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionNot}},
 	}
 
 	for _, tc := range testCases {
@@ -120,6 +120,98 @@ func TestBinaryOperator(t *testing.T) {
 
 		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
 			t.Errorf("BinaryOperator(%q) = %v, want %v", tc.in, got, tc.want)
+			continue
+		}
+	}
+}
+
+func TestModulePathUnaryOperator(t *testing.T) {
+	ctx := context.Background()
+
+	testCases := []struct {
+		in        string
+		want      any
+		wantRest  string
+		wantError bool
+	}{
+		{in: "~&", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionNand}},
+		{in: "~|", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionNor}},
+		{in: "~^", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionXnor}},
+		{in: "^~", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionXnor}},
+		{in: "!", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalNegation}},
+		{in: "&", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionAnd}},
+		{in: "|", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionOr}},
+		{in: "^", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionXor}},
+		{in: "~", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionNot}},
+	}
+
+	for _, tc := range testCases {
+		c := runes.Cursor(tc.in)
+		gotRest, got, err := UnaryModulePathOperator(ctx, c)
+		gotError := (err != nil)
+
+		if gotError != tc.wantError {
+			if tc.wantError {
+				t.Errorf("UnaryModulePathOperator(%q) = %v, want error", tc.in, got)
+			} else {
+				t.Errorf("UnaryModulePathOperator(%q) unexpected error: %v", tc.in, err)
+			}
+			continue
+		}
+
+		if string(gotRest.Rest()) != tc.wantRest {
+			t.Errorf("UnaryModulePathOperator(%q) rest = %q, want %q", tc.in, string(gotRest.Rest()), tc.wantRest)
+			continue
+		}
+
+		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
+			t.Errorf("UnaryModulePathOperator(%q) = %v, want %v", tc.in, got, tc.want)
+			continue
+		}
+	}
+}
+
+func TestBinaryModulePathOperator(t *testing.T) {
+	ctx := context.Background()
+
+	testCases := []struct {
+		in        string
+		want      any
+		wantRest  string
+		wantError bool
+	}{
+		{in: "^~", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseXnor}},
+		{in: "~^", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseXnor}},
+		{in: "&&", want: &ast.BinaryModulePathOperator{Op: ast.BinaryLogicalAnd}},
+		{in: "||", want: &ast.BinaryModulePathOperator{Op: ast.BinaryLogicalOr}},
+		{in: "!=", want: &ast.BinaryModulePathOperator{Op: ast.BinaryLogicalNotEquals}},
+		{in: "==", want: &ast.BinaryModulePathOperator{Op: ast.BinaryLogicalEquals}},
+		{in: "^", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseXor}},
+		{in: "&", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseAnd}},
+		{in: "|", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseOr}},
+	}
+
+	for _, tc := range testCases {
+		c := runes.Cursor(tc.in)
+		gotRest, got, err := BinaryModulePathOperator(ctx, c)
+		gotError := (err != nil)
+
+		if gotError != tc.wantError {
+			if tc.wantError {
+				t.Errorf("BinaryModulePathOperator(%q) = %v, want error", tc.in, got)
+			} else {
+				t.Errorf("BinaryModulePathOperator(%q) unexpected error: %v", tc.in, err)
+			}
+			continue
+		}
+
+		if string(gotRest.Rest()) != tc.wantRest {
+			t.Errorf("BinaryModulePathOperator(%q) rest = %q, want %q", tc.in, string(gotRest.Rest()), tc.wantRest)
+			continue
+		}
+
+		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
+			t.Errorf("BinaryModulePathOperator(%q) = %v, want %v", tc.in, got, tc.want)
 			continue
 		}
 	}
