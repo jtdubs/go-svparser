@@ -36,9 +36,25 @@ func simpleIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
 	)(ctx, start)
 }
 
+func CIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.CIdentifier, error) {
+	res := &ast.CIdentifier{}
+	return tBind(res, &res.Span, fn.Preceded(alpha_, fn.Many0(alphanumeric_)))(ctx, start)
+}
+
+func SystemTfIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.SystemTfIdentifier, error) {
+	res := &ast.SystemTfIdentifier{}
+	return tBind(res, &res.Span, fn.Preceded(runes.Rune('$'), fn.Many1(alphanumeric_S)))(ctx, start)
+}
+
+func TaskIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.TaskIdentifier, error) {
+	res := &ast.TaskIdentifier{}
+	return tBind(res, &res.Span, bindValue(&res.ID, Identifier))(ctx, start)
+}
+
 var asciiPrintNonWS = fn.Satisfy(func(r rune) bool {
 	return r < 128 && unicode.IsPrint(r) && !unicode.IsSpace(r)
 })
 
 var alpha_ = runes.OneOf("abcdefghijklmnoprqstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ_")
+var alphanumeric_ = runes.OneOf("abcdefghijklmnoprqstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789_")
 var alphanumeric_S = runes.OneOf("abcdefghijklmnoprqstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789_$")

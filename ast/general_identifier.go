@@ -42,3 +42,40 @@ func (i *EscapedIdentifier) Bake() error {
 }
 
 func (*EscapedIdentifier) isIdentifier() {}
+
+type CIdentifier struct {
+	nom.Span[rune]
+	Name string
+}
+
+func (i *CIdentifier) String() string {
+	return fmt.Sprintf("CIdentifier(%v)", i.Name)
+}
+
+func (i *CIdentifier) Bake() error {
+	i.Name = string(i.Span.Value())
+	return nil
+}
+
+type SystemTfIdentifier struct {
+	nom.Span[rune]
+	Name string
+}
+
+func (i *SystemTfIdentifier) String() string {
+	return fmt.Sprintf("SystemTfIdentifier(%v)", i.Name)
+}
+
+func (i *SystemTfIdentifier) Bake() error {
+	i.Name = string(i.Span.Value())
+	return nil
+}
+
+type TaskIdentifier struct {
+	nom.Span[rune]
+	ID Identifier
+}
+
+func (i *TaskIdentifier) String() string {
+	return fmt.Sprintf("TaskIdentifier(%v)", i.ID)
+}
