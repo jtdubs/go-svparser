@@ -1,25 +1,13 @@
 package grammar
 
 import (
-	"context"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/jtdubs/go-nom"
-	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
 func TestUnaryOperator(t *testing.T) {
-	ctx := context.Background()
-
-	testCases := []struct {
-		in        string
-		want      any
-		wantRest  string
-		wantError bool
-	}{
+	testCases := []testCase[*ast.UnaryOperator]{
 		{in: "~&", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionNand}},
 		{in: "~|", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionNor}},
 		{in: "~^", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionXnor}},
@@ -34,40 +22,12 @@ func TestUnaryOperator(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		c := runes.Cursor(tc.in)
-		gotRest, got, err := UnaryOperator(ctx, c)
-		gotError := (err != nil)
-
-		if gotError != tc.wantError {
-			if tc.wantError {
-				t.Errorf("UnaryOperator(%q) = %v, want error", tc.in, got)
-			} else {
-				t.Errorf("UnaryOperator(%q) unexpected error: %v", tc.in, err)
-			}
-			continue
-		}
-
-		if string(gotRest.Rest()) != tc.wantRest {
-			t.Errorf("UnaryOperator(%q) rest = %q, want %q", tc.in, string(gotRest.Rest()), tc.wantRest)
-			continue
-		}
-
-		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
-			t.Errorf("UnaryOperator(%q) = %v, want %v", tc.in, got, tc.want)
-			continue
-		}
+		validate(t, "UnaryOperator", UnaryOperator, tc)
 	}
 }
 
 func TestBinaryOperator(t *testing.T) {
-	ctx := context.Background()
-
-	testCases := []struct {
-		in        string
-		want      any
-		wantRest  string
-		wantError bool
-	}{
+	testCases := []testCase[*ast.BinaryOperator]{
 		{in: "<<<", want: &ast.BinaryOperator{Op: ast.BinaryArithmeticShiftLeft}},
 		{in: ">>>", want: &ast.BinaryOperator{Op: ast.BinaryArithmeticShiftRight}},
 		{in: "<->", want: &ast.BinaryOperator{Op: ast.BinaryLogicalIff}},
@@ -100,40 +60,12 @@ func TestBinaryOperator(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		c := runes.Cursor(tc.in)
-		gotRest, got, err := BinaryOperator(ctx, c)
-		gotError := (err != nil)
-
-		if gotError != tc.wantError {
-			if tc.wantError {
-				t.Errorf("BinaryOperator(%q) = %v, want error", tc.in, got)
-			} else {
-				t.Errorf("BinaryOperator(%q) unexpected error: %v", tc.in, err)
-			}
-			continue
-		}
-
-		if string(gotRest.Rest()) != tc.wantRest {
-			t.Errorf("BinaryOperator(%q) rest = %q, want %q", tc.in, string(gotRest.Rest()), tc.wantRest)
-			continue
-		}
-
-		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
-			t.Errorf("BinaryOperator(%q) = %v, want %v", tc.in, got, tc.want)
-			continue
-		}
+		validate(t, "BinaryOperator", BinaryOperator, tc)
 	}
 }
 
 func TestModulePathUnaryOperator(t *testing.T) {
-	ctx := context.Background()
-
-	testCases := []struct {
-		in        string
-		want      any
-		wantRest  string
-		wantError bool
-	}{
+	testCases := []testCase[*ast.UnaryModulePathOperator]{
 		{in: "~&", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionNand}},
 		{in: "~|", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionNor}},
 		{in: "~^", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionXnor}},
@@ -146,40 +78,12 @@ func TestModulePathUnaryOperator(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		c := runes.Cursor(tc.in)
-		gotRest, got, err := UnaryModulePathOperator(ctx, c)
-		gotError := (err != nil)
-
-		if gotError != tc.wantError {
-			if tc.wantError {
-				t.Errorf("UnaryModulePathOperator(%q) = %v, want error", tc.in, got)
-			} else {
-				t.Errorf("UnaryModulePathOperator(%q) unexpected error: %v", tc.in, err)
-			}
-			continue
-		}
-
-		if string(gotRest.Rest()) != tc.wantRest {
-			t.Errorf("UnaryModulePathOperator(%q) rest = %q, want %q", tc.in, string(gotRest.Rest()), tc.wantRest)
-			continue
-		}
-
-		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
-			t.Errorf("UnaryModulePathOperator(%q) = %v, want %v", tc.in, got, tc.want)
-			continue
-		}
+		validate(t, "UnaryModulePathOperator", UnaryModulePathOperator, tc)
 	}
 }
 
 func TestBinaryModulePathOperator(t *testing.T) {
-	ctx := context.Background()
-
-	testCases := []struct {
-		in        string
-		want      any
-		wantRest  string
-		wantError bool
-	}{
+	testCases := []testCase[*ast.BinaryModulePathOperator]{
 		{in: "^~", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseXnor}},
 		{in: "~^", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseXnor}},
 		{in: "&&", want: &ast.BinaryModulePathOperator{Op: ast.BinaryLogicalAnd}},
@@ -192,27 +96,6 @@ func TestBinaryModulePathOperator(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		c := runes.Cursor(tc.in)
-		gotRest, got, err := BinaryModulePathOperator(ctx, c)
-		gotError := (err != nil)
-
-		if gotError != tc.wantError {
-			if tc.wantError {
-				t.Errorf("BinaryModulePathOperator(%q) = %v, want error", tc.in, got)
-			} else {
-				t.Errorf("BinaryModulePathOperator(%q) unexpected error: %v", tc.in, err)
-			}
-			continue
-		}
-
-		if string(gotRest.Rest()) != tc.wantRest {
-			t.Errorf("BinaryModulePathOperator(%q) rest = %q, want %q", tc.in, string(gotRest.Rest()), tc.wantRest)
-			continue
-		}
-
-		if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
-			t.Errorf("BinaryModulePathOperator(%q) = %v, want %v", tc.in, got, tc.want)
-			continue
-		}
+		validate(t, "BinaryModulePathOperator", BinaryModulePathOperator, tc)
 	}
 }
