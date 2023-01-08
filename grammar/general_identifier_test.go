@@ -39,3 +39,36 @@ func TestTaskIdentifier(t *testing.T) {
 		validate(t, "TaskIdentifier", TaskIdentifier, tc)
 	}
 }
+
+func TestArrayIdentifier(t *testing.T) {
+	testCases := []testCase[*ast.ArrayIdentifier]{
+		{in: "hello", want: &ast.ArrayIdentifier{ID: &ast.SimpleIdentifier{Name: "hello"}}},
+		{in: "_myVar1", want: &ast.ArrayIdentifier{ID: &ast.SimpleIdentifier{Name: "_myVar1"}}},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "ArrayIdentifier", ArrayIdentifier, tc)
+	}
+}
+
+func TestBlockIdentifier(t *testing.T) {
+	testCases := []testCase[*ast.BlockIdentifier]{
+		{in: "hello", want: &ast.BlockIdentifier{ID: &ast.SimpleIdentifier{Name: "hello"}}},
+		{in: "_myVar1", want: &ast.BlockIdentifier{ID: &ast.SimpleIdentifier{Name: "_myVar1"}}},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "BlockIdentifier", BlockIdentifier, tc)
+	}
+}
+
+func TestBinIdentifier(t *testing.T) {
+	testCases := []testCase[*ast.BinIdentifier]{
+		{in: "hello", want: &ast.BinIdentifier{ID: &ast.SimpleIdentifier{Name: "hello"}}},
+		{in: "_myVar1", want: &ast.BinIdentifier{ID: &ast.SimpleIdentifier{Name: "_myVar1"}}},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "BinIdentifier", BinIdentifier, tc)
+	}
+}
