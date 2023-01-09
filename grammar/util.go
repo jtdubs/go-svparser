@@ -69,3 +69,10 @@ func tConcatSeq(ps ...nom.ParseFn[rune, string]) nom.ParseFn[rune, string] {
 func tCons(p nom.ParseFn[rune, rune], ps nom.ParseFn[rune, string]) nom.ParseFn[rune, string] {
 	return trace.TraceN(1, runes.Cons(p, ps))
 }
+
+func parens[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
+	return fn.Surrounded(
+		fn.Terminated(runes.Rune('('), Whitespace0),
+		fn.Preceded(Whitespace0, runes.Rune(')')),
+		p)
+}
