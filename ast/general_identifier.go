@@ -21,7 +21,7 @@ func (i *SimpleIdentifier) String() string {
 
 func (i *SimpleIdentifier) Bake() error {
 	i.Name = string(i.Span.Value())
-	return nil
+	return assertNotKeyword(i.Name)
 }
 
 func (*SimpleIdentifier) isIdentifier() {}
@@ -38,7 +38,7 @@ func (i *EscapedIdentifier) String() string {
 
 func (i *EscapedIdentifier) Bake() error {
 	i.Name = string(i.NameT.Value())
-	return nil
+	return assertNotKeyword(i.Name)
 }
 
 func (*EscapedIdentifier) isIdentifier() {}
@@ -54,7 +54,7 @@ func (i *CIdentifier) String() string {
 
 func (i *CIdentifier) Bake() error {
 	i.Name = string(i.Span.Value())
-	return nil
+	return assertNotKeyword(i.Name)
 }
 
 type SystemTfIdentifier struct {
