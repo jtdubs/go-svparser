@@ -9,6 +9,14 @@ import (
 	"github.com/jtdubs/go-svparser/ast"
 )
 
+//
+// A.8.6 Operators
+//
+
+/*
+ * unary_operator ::=
+ *   + | - | ! | ~ | & | ~& | | | ~| | ^ | ~^ | ^~
+ */
 func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryOperator, error) {
 	res := &ast.UnaryOperator{}
 	return tBind(res, &res.Span,
@@ -30,6 +38,12 @@ func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
 	)(ctx, start)
 }
 
+/*
+ * binary_operator ::=
+ *   + | - | * | / | % | == | != | === | !== | ==? | !=? | && | || | **
+ *   | < | <= | > | >= | & | | | ^ | ^~ | ~^ | >> | << | >>> | <<<
+ *   | -> | <->
+ */
 func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryOperator, error) {
 	res := &ast.BinaryOperator{}
 	return tBind(res, &res.Span,
@@ -69,6 +83,9 @@ func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 	)(ctx, start)
 }
 
+/*
+ * inc_or_dec_operator ::= ++ | --
+ */
 func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IncOrDecOperator, error) {
 	res := &ast.IncOrDecOperator{}
 	return tBind(res, &res.Span,
@@ -81,6 +98,10 @@ func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
 	)(ctx, start)
 }
 
+/*
+ * unary_module_path_operator ::=
+ *   ! | ~ | & | ~& | | | ~| | ^ | ~^ | ^~
+ */
 func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryModulePathOperator, error) {
 	res := &ast.UnaryModulePathOperator{}
 	return tBind(res, &res.Span,
@@ -100,6 +121,10 @@ func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.C
 	)(ctx, start)
 }
 
+/*
+ * binary_module_path_operator ::=
+ *   == | != | && | || | & | | | ^ | ^~ | ~^
+ */
 func BinaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryModulePathOperator, error) {
 	res := &ast.BinaryModulePathOperator{}
 	return tBind(res, &res.Span,

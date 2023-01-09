@@ -10,8 +10,15 @@ import (
 	"github.com/jtdubs/go-svparser/ast"
 )
 
-func String(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.String, error) {
-	res := &ast.String{}
+//
+// A.8.8 Strings
+//
+
+/*
+ * string_literal ::= " { Any_ASCII_Characters } "
+ */
+func StringLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.StringLiteral, error) {
+	res := &ast.StringLiteral{}
 	return tBind(res, &res.Span, fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents))(ctx, start)
 }
 

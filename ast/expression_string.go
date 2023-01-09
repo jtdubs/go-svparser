@@ -7,16 +7,16 @@ import (
 	"github.com/jtdubs/go-nom"
 )
 
-type String struct {
+type StringLiteral struct {
 	nom.Span[rune]
 	Text string
 }
 
-func (s *String) String() string {
-	return fmt.Sprintf("String(%q)", s.Text)
+func (s *StringLiteral) String() string {
+	return fmt.Sprintf("StringLiteral(%q)", s.Text)
 }
 
-func (s *String) Bake() error {
+func (s *StringLiteral) Bake() error {
 	text, err := strconv.Unquote(string(s.Span.Value()))
 	if err != nil {
 		return err
