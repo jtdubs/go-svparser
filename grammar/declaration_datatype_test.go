@@ -10,15 +10,15 @@ func TestDriveStrength(t *testing.T) {
 	testCases := []testCase[*ast.DriveStrength]{
 		{
 			in:   "( pull0, pull1 )",
-			want: &ast.DriveStrength{A: &ast.Strength0{Type: ast.Pull0}, B: &ast.Strength1{Type: ast.Pull1}},
+			want: &ast.DriveStrength{A: &ast.Strength0{Type: ast.StrengthPull0}, B: &ast.Strength1{Type: ast.StrengthPull1}},
 		},
 		{
 			in:   "( supply0, weak1 )",
-			want: &ast.DriveStrength{A: &ast.Strength0{Type: ast.Supply0}, B: &ast.Strength1{Type: ast.Weak1}},
+			want: &ast.DriveStrength{A: &ast.Strength0{Type: ast.StrengthSupply0}, B: &ast.Strength1{Type: ast.StrengthWeak1}},
 		},
 		{
 			in:   "( highz0, strong1 )",
-			want: &ast.DriveStrength{A: &ast.HighZ0{}, B: &ast.Strength1{Type: ast.Strong1}},
+			want: &ast.DriveStrength{A: &ast.HighZ0{}, B: &ast.Strength1{Type: ast.StrengthStrong1}},
 		},
 	}
 
