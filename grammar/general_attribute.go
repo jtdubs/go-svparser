@@ -18,15 +18,13 @@ import (
  */
 func AttributeInstance(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.AttributeInstance, error) {
 	res := &ast.AttributeInstance{}
-	return tBind(res, &res.Span,
-		fn.Surrounded(
-			fn.Terminated(runes.Tag("(*"), Whitespace0),
-			fn.Preceded(Whitespace0, runes.Tag("*)")),
-			fn.Bind(&res.Specs, fn.SeparatedList1(
-				fn.Preceded(Whitespace0, runes.Rune(',')),
-				AttrSpec,
-			)),
-		),
+	return tBindPhrase(res, &res.Span,
+		fn.Discard(runes.Tag("(*")),
+		fn.Bind(&res.Specs, fn.SeparatedList1(
+			word(runes.Rune(',')),
+			AttrSpec,
+		)),
+		fn.Discard(runes.Tag("*)")),
 	)(ctx, start)
 }
 

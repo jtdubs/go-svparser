@@ -9,7 +9,7 @@ import (
 func TestAttributeInstance(t *testing.T) {
 	testCases := []testCase[*ast.AttributeInstance]{
 		{
-			in: "(* foo,bar = 42 *)",
+			in: "\t(* foo , bar = 42 *)",
 			want: &ast.AttributeInstance{
 				Specs: []*ast.AttrSpec{
 					{
@@ -36,7 +36,7 @@ func TestAttrSpec(t *testing.T) {
 			want: &ast.AttrSpec{Name: &ast.AttrName{ID: &ast.SimpleIdentifier{Name: "foo"}}},
 		},
 		{
-			in:   "foo = 42",
+			in:   "\tfoo = 42",
 			want: &ast.AttrSpec{Name: &ast.AttrName{ID: &ast.SimpleIdentifier{Name: "foo"}}, Expr: &ast.UnsignedNumber{Value: 42}},
 		},
 	}

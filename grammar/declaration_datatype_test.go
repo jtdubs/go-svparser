@@ -17,7 +17,7 @@ func TestDriveStrength(t *testing.T) {
 			want: &ast.DriveStrength{A: &ast.Strength0{Type: ast.StrengthSupply0}, B: &ast.Strength1{Type: ast.StrengthWeak1}},
 		},
 		{
-			in:   "( highz0, strong1 )",
+			in:   "  ( highz0, strong1 )",
 			want: &ast.DriveStrength{A: &ast.HighZ0{}, B: &ast.Strength1{Type: ast.StrengthStrong1}},
 		},
 	}

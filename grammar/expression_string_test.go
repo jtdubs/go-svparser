@@ -10,6 +10,7 @@ func TestString(t *testing.T) {
 	testCases := []testCase[*ast.StringLiteral]{
 		{in: `""`, want: &ast.StringLiteral{Text: ""}},
 		{in: `"hello"`, want: &ast.StringLiteral{Text: "hello"}},
+		{in: `  "hello"`, want: &ast.StringLiteral{Text: "hello"}},
 		{in: `"hello\nworld"`, want: &ast.StringLiteral{Text: "hello\nworld"}},
 		{in: `"hello\n\"world\\\"world"`, want: &ast.StringLiteral{Text: "hello\n\"world\\\"world"}},
 	}

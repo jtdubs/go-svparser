@@ -45,7 +45,7 @@ func BinIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
  */
 func CIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.CIdentifier, error) {
 	res := &ast.CIdentifier{}
-	return tBind(res, &res.Span, fn.Preceded(alpha_, fn.Many0(alphanumeric_)))(ctx, start)
+	return word(tBind(res, &res.Span, fn.Preceded(alpha_, fn.Many0(alphanumeric_))))(ctx, start)
 }
 
 /*
@@ -165,10 +165,10 @@ func EnumIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func escapedIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.EscapedIdentifier, error) {
 	res := &ast.EscapedIdentifier{}
-	return tBindSeq(res, &res.Span,
+	return word(tBindSeq(res, &res.Span,
 		bindSpan(&res.SlashT, runes.Rune('\\')),
 		bindSpan(&res.NameT, fn.Terminated(fn.Many1(asciiPrintNonWS), fn.Peek(fn.Alt(runes.Space)))),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -574,9 +574,9 @@ func SignalIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
  */
 func simpleIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.SimpleIdentifier, error) {
 	res := &ast.SimpleIdentifier{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		fn.Preceded(alpha_, fn.Many0(alphanumeric_S)),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -592,7 +592,7 @@ func SpecparamIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Curso
  */
 func SystemTfIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.SystemTfIdentifier, error) {
 	res := &ast.SystemTfIdentifier{}
-	return tBind(res, &res.Span, fn.Preceded(runes.Rune('$'), fn.Many1(alphanumeric_S)))(ctx, start)
+	return word(tBind(res, &res.Span, fn.Preceded(runes.Rune('$'), fn.Many1(alphanumeric_S))))(ctx, start)
 }
 
 /*

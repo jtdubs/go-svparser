@@ -19,6 +19,7 @@ func TestNumber(t *testing.T) {
 		{in: "123.456e7", want: &ast.FloatingPointNumber{Value: 123.456e7}},
 		{in: "123.456e-2", want: &ast.FloatingPointNumber{Value: 123.456e-2}},
 		{in: "32'hFX0F8ZZ2", want: &ast.HexNumber{Value: ast.MaskedInt{Size: 32, Base: 16, V: 0xF00F8002, X: 0x0F000000, Z: 0x00000FF0}}},
+		{in: "\t32 'h F0", want: &ast.HexNumber{Value: ast.MaskedInt{Size: 32, Base: 16, V: 240}}},
 	}
 
 	for _, tc := range testCases {

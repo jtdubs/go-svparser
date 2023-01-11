@@ -11,6 +11,7 @@ func TestConstantPrimary(t *testing.T) {
 		{in: `32`, want: &ast.UnsignedNumber{Value: 32}},
 		{in: `"hello"`, want: &ast.StringLiteral{Text: "hello"}},
 		{in: `42ms`, want: &ast.TimeLiteral{Unit: &ast.TimeUnit{Op: ast.MS}, Number: &ast.UnsignedNumber{Value: 42}}},
+		{in: `  38us`, want: &ast.TimeLiteral{Unit: &ast.TimeUnit{Op: ast.US}, Number: &ast.UnsignedNumber{Value: 38}}},
 		{in: `'0`, want: &ast.UnbasedUnsizedLiteral{Value: '0'}},
 	}
 

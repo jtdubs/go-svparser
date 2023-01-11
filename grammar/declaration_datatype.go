@@ -88,7 +88,7 @@ func IntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune],
  */
 func IntegerAtomType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IntegerAtomType, error) {
 	res := &ast.IntegerAtomType{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.Byte, runes.TagNoCase("byte")),
@@ -99,7 +99,7 @@ func IntegerAtomType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[ru
 				fn.Value(ast.Time, runes.TagNoCase("time")),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -107,7 +107,7 @@ func IntegerAtomType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[ru
  */
 func IntegerVectorType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IntegerVectorType, error) {
 	res := &ast.IntegerVectorType{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.Bit, runes.TagNoCase("bit")),
@@ -115,7 +115,7 @@ func IntegerVectorType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[
 				fn.Value(ast.Reg, runes.TagNoCase("reg")),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -123,7 +123,7 @@ func IntegerVectorType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[
  */
 func NonIntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.NonIntegerType, error) {
 	res := &ast.NonIntegerType{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.ShortReal, runes.TagNoCase("shortreal")),
@@ -131,7 +131,7 @@ func NonIntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 				fn.Value(ast.Real, runes.TagNoCase("real")),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -139,7 +139,7 @@ func NonIntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func NetType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.NetType, error) {
 	res := &ast.NetType{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.NetSupply0, runes.TagNoCase("supply0")),
@@ -156,7 +156,7 @@ func NetType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *as
 				fn.Value(ast.NetWOr, runes.TagNoCase("wor")),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -179,14 +179,14 @@ func NetType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *as
  */
 func Signing(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Signing, error) {
 	res := &ast.Signing{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.Signed, runes.TagNoCase("signed")),
 				fn.Value(ast.Unsigned, runes.TagNoCase("unsigned")),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -236,29 +236,29 @@ func DriveStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
 	return tBind(res, &res.Span,
 		parens(
 			fn.Alt(
-				fn.Seq(
+				phrase(
 					bindSpan(&res.AT, bindValue(&res.A, to[ast.DriveStrengthOption](Strength0))),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.BT, bindValue(&res.B, to[ast.DriveStrengthOption](Strength1)))),
-				fn.Seq(
+				phrase(
 					bindSpan(&res.AT, bindValue(&res.A, to[ast.DriveStrengthOption](Strength1))),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.BT, bindValue(&res.B, to[ast.DriveStrengthOption](Strength0)))),
-				fn.Seq(
+				phrase(
 					bindSpan(&res.AT, bindValue(&res.A, to[ast.DriveStrengthOption](Strength0))),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.BT, bindValue(&res.B, to[ast.DriveStrengthOption](highZ1)))),
-				fn.Seq(
+				phrase(
 					bindSpan(&res.AT, bindValue(&res.A, to[ast.DriveStrengthOption](Strength1))),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.BT, bindValue(&res.B, to[ast.DriveStrengthOption](highZ0)))),
-				fn.Seq(
+				phrase(
 					bindSpan(&res.AT, bindValue(&res.A, to[ast.DriveStrengthOption](highZ0))),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.BT, bindValue(&res.B, to[ast.DriveStrengthOption](Strength1)))),
-				fn.Seq(
+				phrase(
 					bindSpan(&res.AT, bindValue(&res.A, to[ast.DriveStrengthOption](highZ1))),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.BT, bindValue(&res.B, to[ast.DriveStrengthOption](Strength0)))),
 			),
 		),
@@ -267,12 +267,12 @@ func DriveStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
 
 func highZ0(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HighZ0, error) {
 	res := &ast.HighZ0{}
-	return tBind(res, &res.Span, runes.TagNoCase("highz0"))(ctx, start)
+	return word(tBind(res, &res.Span, runes.TagNoCase("highz0")))(ctx, start)
 }
 
 func highZ1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HighZ1, error) {
 	res := &ast.HighZ1{}
-	return tBind(res, &res.Span, runes.TagNoCase("highz1"))(ctx, start)
+	return word(tBind(res, &res.Span, runes.TagNoCase("highz1")))(ctx, start)
 }
 
 /*
@@ -280,7 +280,7 @@ func highZ1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast
  */
 func Strength0(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Strength0, error) {
 	res := &ast.Strength0{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.StrengthSupply0, runes.TagNoCase("supply0")),
@@ -289,7 +289,7 @@ func Strength0(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *
 				fn.Value(ast.StrengthWeak0, runes.TagNoCase("weak0")),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -297,7 +297,7 @@ func Strength0(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *
  */
 func Strength1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Strength1, error) {
 	res := &ast.Strength1{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.StrengthSupply1, runes.TagNoCase("supply1")),
@@ -306,7 +306,7 @@ func Strength1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *
 				fn.Value(ast.StrengthWeak1, runes.TagNoCase("weak1")),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 /*
@@ -314,7 +314,7 @@ func Strength1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *
  */
 func ChargeStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ChargeStrength, error) {
 	res := &ast.ChargeStrength{}
-	return tBind(res, &res.Span,
+	return word(tBind(res, &res.Span,
 		parens(
 			bindSpan(&res.TypeT,
 				bindValue(&res.Type,
@@ -326,7 +326,7 @@ func ChargeStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 				),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }
 
 //

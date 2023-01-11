@@ -24,16 +24,15 @@ func PulldownStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
 	return tBind(res, &res.Span,
 		parens(
 			fn.Alt(
-				fn.Seq(
+				phrase(
 					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0)),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.OneT, bindValue(&res.One, Strength1))),
-				fn.Seq(
+				phrase(
 					bindSpan(&res.OneT, bindValue(&res.One, Strength1)),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0))),
-				fn.Seq(
-					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0))),
+				bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0)),
 			),
 		),
 	)(ctx, start)
@@ -50,16 +49,15 @@ func PullupStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 	return tBind(res, &res.Span,
 		parens(
 			fn.Alt(
-				fn.Seq(
+				phrase(
 					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0)),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.OneT, bindValue(&res.One, Strength1))),
-				fn.Seq(
+				phrase(
 					bindSpan(&res.OneT, bindValue(&res.One, Strength1)),
-					fn.Discard(fn.Surrounded(Whitespace0, Whitespace0, runes.Rune(','))),
+					fn.Discard(runes.Rune(',')),
 					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0))),
-				fn.Seq(
-					bindSpan(&res.ZeroT, bindValue(&res.One, Strength1))),
+				bindSpan(&res.ZeroT, bindValue(&res.One, Strength1)),
 			),
 		),
 	)(ctx, start)

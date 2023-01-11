@@ -18,7 +18,7 @@ import (
  */
 func CMOSSwitchType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.CMOSSwitchType, error) {
 	res := &ast.CMOSSwitchType{}
-	return tBind(res, &res.Span,
+	return tBindPhrase(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.CMOS, runes.TagNoCase("cmos")),
@@ -33,7 +33,7 @@ func CMOSSwitchType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func EnableGateType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.EnableGateType, error) {
 	res := &ast.EnableGateType{}
-	return tBind(res, &res.Span,
+	return tBindPhrase(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.BUFIF0, runes.TagNoCase("bufif0")),
@@ -50,7 +50,7 @@ func EnableGateType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func MOSSwitchType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.MOSSwitchType, error) {
 	res := &ast.MOSSwitchType{}
-	return tBind(res, &res.Span,
+	return tBindPhrase(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.NMOS, runes.TagNoCase("nmos")),
@@ -67,7 +67,7 @@ func MOSSwitchType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
  */
 func NInputGateType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.NInputGateType, error) {
 	res := &ast.NInputGateType{}
-	return tBind(res, &res.Span,
+	return tBindPhrase(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.InputGateAnd, runes.TagNoCase("and")),
@@ -86,7 +86,7 @@ func NInputGateType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func NOutputGateType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.NOutputGateType, error) {
 	res := &ast.NOutputGateType{}
-	return tBind(res, &res.Span,
+	return tBindPhrase(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.OutputGateBuf, runes.TagNoCase("buf")),
@@ -101,7 +101,7 @@ func NOutputGateType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[ru
  */
 func PassEnSwitchType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PassEnSwitchType, error) {
 	res := &ast.PassEnSwitchType{}
-	return tBind(res, &res.Span,
+	return tBindPhrase(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.TRANIF0, runes.TagNoCase("tranif0")),
@@ -118,7 +118,7 @@ func PassEnSwitchType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
  */
 func PassSwitchType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PassSwitchType, error) {
 	res := &ast.PassSwitchType{}
-	return tBind(res, &res.Span,
+	return tBindPhrase(res, &res.Span,
 		bindValue(&res.Type,
 			fn.Alt(
 				fn.Value(ast.TRAN, runes.TagNoCase("tran")),

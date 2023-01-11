@@ -20,7 +20,7 @@ func TestConstantExpression(t *testing.T) {
 			},
 		},
 		{
-			in: "10+20",
+			in: "\t10 + 20",
 			want: &ast.ConstantBinaryExpression{
 				Op:    &ast.BinaryOperator{Op: ast.BinaryAdd},
 				Left:  &ast.UnsignedNumber{Value: 10},

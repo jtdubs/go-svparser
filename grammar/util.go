@@ -11,8 +11,6 @@ import (
 	"github.com/jtdubs/go-svparser/ast"
 )
 
-// TODO(justindubs): consistent handling of whitespace (probably using fn.Preceded)
-
 func bindSpan[T any](t *nom.Span[rune], p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 	return bindValue(t, fn.Spanning(p))
 }
@@ -64,7 +62,7 @@ func tBindPhrase[T, U any](t T, s *nom.Span[rune], ps ...nom.ParseFn[rune, U]) n
 	if b, ok := reflect.ValueOf(t).Interface().(ast.Bakeable); ok {
 		return trace.TraceN(1, to[T](bake(fn.Value(b, bindSpan(s, phrase(ps...))))))
 	} else {
-		return trace.TraceN(1, fn.Value(t, bindSpan(s, fn.Seq(ps...))))
+		return trace.TraceN(1, fn.Value(t, bindSpan(s, phrase(ps...))))
 	}
 }
 
@@ -80,17 +78,21 @@ func tCons(p nom.ParseFn[rune, rune], ps nom.ParseFn[rune, string]) nom.ParseFn[
 	return trace.TraceN(1, runes.Cons(p, ps))
 }
 
+func parens[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
+	return fn.Surrounded(
+		word(runes.Rune('(')),
+		word(runes.Rune(')')),
+		word(p))
+}
+
+func word[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
+	return fn.Preceded(Whitespace0, p)
+}
+
 func phrase[T any](ps ...nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 	var words []nom.ParseFn[rune, T]
 	for _, p := range ps {
-		words = append(words, fn.Preceded(Whitespace0, p))
+		words = append(words, word(p))
 	}
 	return fn.Discard(fn.Seq(words...))
-}
-
-func parens[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
-	return fn.Surrounded(
-		fn.Terminated(runes.Rune('('), Whitespace0),
-		fn.Preceded(Whitespace0, runes.Rune(')')),
-		p)
 }

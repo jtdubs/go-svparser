@@ -19,6 +19,7 @@ func TestUnaryOperator(t *testing.T) {
 		{in: "|", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionOr}},
 		{in: "^", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionXor}},
 		{in: "~", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionNot}},
+		{in: " ~", want: &ast.UnaryOperator{Op: ast.UnaryLogicalReductionNot}},
 	}
 
 	for _, tc := range testCases {
@@ -57,6 +58,7 @@ func TestBinaryOperator(t *testing.T) {
 		{in: "%", want: &ast.BinaryOperator{Op: ast.BinaryModulus}},
 		{in: "&", want: &ast.BinaryOperator{Op: ast.BinaryBitwiseAnd}},
 		{in: "|", want: &ast.BinaryOperator{Op: ast.BinaryBitwiseOr}},
+		{in: "\t|", want: &ast.BinaryOperator{Op: ast.BinaryBitwiseOr}},
 	}
 
 	for _, tc := range testCases {
@@ -75,6 +77,7 @@ func TestModulePathUnaryOperator(t *testing.T) {
 		{in: "|", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionOr}},
 		{in: "^", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionXor}},
 		{in: "~", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionNot}},
+		{in: "\t~", want: &ast.UnaryModulePathOperator{Op: ast.UnaryLogicalReductionNot}},
 	}
 
 	for _, tc := range testCases {
@@ -93,6 +96,7 @@ func TestBinaryModulePathOperator(t *testing.T) {
 		{in: "^", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseXor}},
 		{in: "&", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseAnd}},
 		{in: "|", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseOr}},
+		{in: "\t|", want: &ast.BinaryModulePathOperator{Op: ast.BinaryBitwiseOr}},
 	}
 
 	for _, tc := range testCases {
