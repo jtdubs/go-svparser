@@ -541,3 +541,31 @@ type DynamicArrayVariableIdentifier struct {
 func (i *DynamicArrayVariableIdentifier) String() string {
 	return fmt.Sprintf("DynamicArrayVariableIdentifier(%v)", i.Var)
 }
+
+type HierarchicalIdentifier struct {
+	nom.Span[rune]
+	RootT nom.Span[rune]
+	Root  bool
+	Parts []*HierarchicalIdentifierPart
+}
+
+func (h *HierarchicalIdentifier) Bake() error {
+	if len(h.RootT.Value()) > 0 {
+		h.Root = true
+	}
+	return nil
+}
+
+func (i *HierarchicalIdentifier) String() string {
+	return fmt.Sprintf("HierarchicalIdentifier(Root=%v, %v)", i.Root, i.Parts)
+}
+
+type HierarchicalIdentifierPart struct {
+	nom.Span[rune]
+	ID   Identifier
+	Bits *ConstantBitSelect
+}
+
+func (i *HierarchicalIdentifierPart) String() string {
+	return fmt.Sprintf("HierarchicalIdentifierPart(%v, %v)", i.ID, i.Bits)
+}

@@ -226,10 +226,42 @@ func GenvarIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
 /*
  * hierarchical_identifier ::= [ $root . ] { identifier constant_bit_select . } identifier
  */
-func HierarchicalIdentifier() {
-	_ = fn.Discard(Identifier)
-	// TODO(justindubs): _ = fn.Discard(ConstantBitSelect)
-	_ = fn.Discard(Identifier)
+func HierarchicalIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HierarchicalIdentifier, error) {
+	res := &ast.HierarchicalIdentifier{}
+	return tBindSeq(res, &res.Span,
+		fn.Opt(
+			phrase(
+				bindSpan(&res.RootT, runes.Tag("$root")),
+				fn.Discard(runes.Rune('.')),
+			),
+		),
+		bindValue(&res.Parts,
+			fn.Append(
+				fn.Many0(hierarchicalIdentifierPart),
+				lastHierarchicalIdentifierPart,
+			),
+		),
+	)(ctx, start)
+}
+
+/*
+ * hierarchical_identifier ::= ... identifier constant_bit_select . ...
+ */
+func hierarchicalIdentifierPart(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HierarchicalIdentifierPart, error) {
+	res := &ast.HierarchicalIdentifierPart{}
+	return tBindPhrase(res, &res.Span,
+		bindValue(&res.ID, Identifier),
+		bindValue(&res.Bits, ConstantBitSelect),
+		fn.Discard(runes.Rune('.')),
+	)(ctx, start)
+}
+
+/*
+ * hierarchical_identifier ::= ... identifier ...
+ */
+func lastHierarchicalIdentifierPart(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HierarchicalIdentifierPart, error) {
+	res := &ast.HierarchicalIdentifierPart{}
+	return tBindPhrase(res, &res.Span, bindValue(&res.ID, Identifier))(ctx, start)
 }
 
 /*
@@ -400,8 +432,8 @@ func PackageIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[
  *   | $unit ::
  */
 func PackageScope() {
-	_ = fn.Discard(PackageIdentifier)
 	// TODO(justindubs): implement me
+	_ = fn.Discard(PackageIdentifier)
 }
 
 /*

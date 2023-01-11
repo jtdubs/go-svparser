@@ -75,3 +75,41 @@ func TestBinIdentifier(t *testing.T) {
 		validate(t, "BinIdentifier", BinIdentifier, tc)
 	}
 }
+
+func TestHierarchicalIdentifier(t *testing.T) {
+	testCases := []testCase[*ast.HierarchicalIdentifier]{
+		{
+			in: "$root.foo[42].bar",
+			want: &ast.HierarchicalIdentifier{
+				Root: true,
+				Parts: []*ast.HierarchicalIdentifierPart{
+					{
+						ID:   &ast.SimpleIdentifier{Name: "foo"},
+						Bits: &ast.ConstantBitSelect{Exprs: []ast.ConstantExpression{&ast.UnsignedNumber{Value: 42}}},
+					},
+					{
+						ID: &ast.SimpleIdentifier{Name: "bar"},
+					},
+				},
+			},
+		},
+		{
+			in: "foo[42].bar",
+			want: &ast.HierarchicalIdentifier{
+				Parts: []*ast.HierarchicalIdentifierPart{
+					{
+						ID:   &ast.SimpleIdentifier{Name: "foo"},
+						Bits: &ast.ConstantBitSelect{Exprs: []ast.ConstantExpression{&ast.UnsignedNumber{Value: 42}}},
+					},
+					{
+						ID: &ast.SimpleIdentifier{Name: "bar"},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "HierarchicalIdentifier", HierarchicalIdentifier, tc)
+	}
+}
