@@ -8,7 +8,8 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/runes"
-	"github.com/jtdubs/go-svparser/ast"
+	"github.com/jtdubs/go-nom/trace"
+	"github.com/jtdubs/go-nom/trace/printtracer"
 )
 
 type testCase[T any] struct {
@@ -18,10 +19,21 @@ type testCase[T any] struct {
 	wantError bool
 }
 
+func validateTrace[T, U any](t *testing.T, name string, fn nom.ParseFn[rune, T], tc testCase[U]) {
+	t.Helper()
+	trace.TraceSupported()
+	ctx := trace.WithTracing(trace.WithTracer(context.Background(), printtracer.New[rune]()))
+	validateHelper(t, ctx, name, fn, tc)
+}
+
 func validate[T, U any](t *testing.T, name string, fn nom.ParseFn[rune, T], tc testCase[U]) {
 	t.Helper()
+	validateHelper(t, context.Background(), name, fn, tc)
+}
 
-	ctx := context.Background()
+func validateHelper[T, U any](t *testing.T, ctx context.Context, name string, fn nom.ParseFn[rune, T], tc testCase[U]) {
+	t.Helper()
+
 	c := runes.Cursor(tc.in)
 	gotRest, got, err := fn(ctx, c)
 	gotError := (err != nil)
@@ -40,7 +52,7 @@ func validate[T, U any](t *testing.T, name string, fn nom.ParseFn[rune, T], tc t
 		return
 	}
 
-	if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(ast.Token{}, nom.Span[rune]{})); diff != "" {
+	if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(nom.Span[rune]{})); diff != "" {
 		t.Errorf("%v(%q) = %v, want %v", name, tc.in, got, tc.want)
 		return
 	}

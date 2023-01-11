@@ -30,7 +30,7 @@ func Comment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast
 func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
 	res := &ast.BlockComment{}
 	return tBindSeq(res, &res.Span,
-		bindSpan(&res.StartT, runes.Tag("/*")),
+		fn.Discard(runes.Tag("/*")),
 		bindSpan(&res.TextT,
 			runes.Join(
 				fn.First(
@@ -41,7 +41,7 @@ func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune]
 				),
 			),
 		),
-		bindSpan(&res.EndT, runes.Tag("*/")),
+		fn.Discard(runes.Tag("*/")),
 	)(ctx, start)
 }
 
@@ -51,7 +51,7 @@ func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune]
 func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
 	res := &ast.OneLineComment{}
 	return tBindSeq(res, &res.Span,
-		bindSpan(&res.StartT, runes.Tag("//")),
+		fn.Discard(runes.Tag("//")),
 		bindSpan(&res.TextT,
 			runes.Join(
 				fn.First(
@@ -62,6 +62,6 @@ func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 				),
 			),
 		),
-		bindSpan(&res.EndT, runes.Newline),
+		fn.Discard(runes.Newline),
 	)(ctx, start)
 }

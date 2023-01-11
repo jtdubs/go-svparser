@@ -25,6 +25,7 @@ func (s *StringLiteral) Bake() error {
 	return nil
 }
 
-func (*StringLiteral) isPrimaryLiteral()  {}
-func (*StringLiteral) isPrimary()         {}
-func (*StringLiteral) isConstantPrimary() {}
+func (*StringLiteral) isPrimaryLiteral()     {}
+func (*StringLiteral) isPrimary()            {}
+func (*StringLiteral) isConstantPrimary()    {}
+func (*StringLiteral) isConstantExpression() {}

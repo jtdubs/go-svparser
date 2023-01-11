@@ -7,6 +7,7 @@ import (
 )
 
 type ConstantPrimary interface {
+	ConstantExpression
 	isConstantPrimary()
 }
 
@@ -30,9 +31,10 @@ func (t *TimeLiteral) String() string {
 	return fmt.Sprintf("TimeLiteral(%v, %v)", t.Number, t.Unit)
 }
 
-func (*TimeLiteral) isPrimaryLiteral()  {}
-func (*TimeLiteral) isPrimary()         {}
-func (*TimeLiteral) isConstantPrimary() {}
+func (*TimeLiteral) isPrimaryLiteral()     {}
+func (*TimeLiteral) isPrimary()            {}
+func (*TimeLiteral) isConstantPrimary()    {}
+func (*TimeLiteral) isConstantExpression() {}
 
 type TimeUnitOption int
 

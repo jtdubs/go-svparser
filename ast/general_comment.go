@@ -11,9 +11,9 @@ type Comment interface {
 }
 
 type OneLineComment struct {
-	Token
-	StartT, EndT, TextT nom.Span[rune]
-	Text                string
+	nom.Span[rune]
+	TextT nom.Span[rune]
+	Text  string
 }
 
 func (c *OneLineComment) String() string {
@@ -29,9 +29,9 @@ func (*OneLineComment) isComment()    {}
 func (*OneLineComment) isWhitespace() {}
 
 type BlockComment struct {
-	Token
-	StartT, EndT, TextT nom.Span[rune]
-	Text                string
+	nom.Span[rune]
+	TextT nom.Span[rune]
+	Text  string
 }
 
 func (c *BlockComment) String() string {

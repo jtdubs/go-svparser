@@ -2,6 +2,8 @@ package ast
 
 import (
 	"fmt"
+
+	"github.com/jtdubs/go-nom"
 )
 
 type Whitespace interface {
@@ -9,7 +11,7 @@ type Whitespace interface {
 }
 
 type Spaces struct {
-	Token
+	nom.Span[rune]
 	Text string
 }
 
@@ -18,7 +20,7 @@ func (c *Spaces) String() string {
 }
 
 func (c *Spaces) Bake() error {
-	c.Text = c.Token.Value()
+	c.Text = string(c.Span.Value())
 	return nil
 }
 

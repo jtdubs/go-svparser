@@ -24,7 +24,7 @@ type DecimalNumber interface {
 }
 
 type DecimalNumberUnsigned struct {
-	Token
+	nom.Span[rune]
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Size                 uint
 	Value                uint64
@@ -44,15 +44,16 @@ func (d *DecimalNumberUnsigned) Bake() error {
 	return err
 }
 
-func (*DecimalNumberUnsigned) isDecimalNumber()   {}
-func (*DecimalNumberUnsigned) isIntegralNumber()  {}
-func (*DecimalNumberUnsigned) isNumber()          {}
-func (*DecimalNumberUnsigned) isPrimaryLiteral()  {}
-func (*DecimalNumberUnsigned) isPrimary()         {}
-func (*DecimalNumberUnsigned) isConstantPrimary() {}
+func (*DecimalNumberUnsigned) isDecimalNumber()      {}
+func (*DecimalNumberUnsigned) isIntegralNumber()     {}
+func (*DecimalNumberUnsigned) isNumber()             {}
+func (*DecimalNumberUnsigned) isPrimaryLiteral()     {}
+func (*DecimalNumberUnsigned) isPrimary()            {}
+func (*DecimalNumberUnsigned) isConstantPrimary()    {}
+func (*DecimalNumberUnsigned) isConstantExpression() {}
 
 type DecimalNumberX struct {
-	Token
+	nom.Span[rune]
 	SizeT, BaseT, X nom.Span[rune]
 	Size            uint
 }
@@ -70,15 +71,16 @@ func (d *DecimalNumberX) Bake() error {
 	return nil
 }
 
-func (*DecimalNumberX) isDecimalNumber()   {}
-func (*DecimalNumberX) isIntegralNumber()  {}
-func (*DecimalNumberX) isNumber()          {}
-func (*DecimalNumberX) isPrimaryLiteral()  {}
-func (*DecimalNumberX) isPrimary()         {}
-func (*DecimalNumberX) isConstantPrimary() {}
+func (*DecimalNumberX) isDecimalNumber()      {}
+func (*DecimalNumberX) isIntegralNumber()     {}
+func (*DecimalNumberX) isNumber()             {}
+func (*DecimalNumberX) isPrimaryLiteral()     {}
+func (*DecimalNumberX) isPrimary()            {}
+func (*DecimalNumberX) isConstantPrimary()    {}
+func (*DecimalNumberX) isConstantExpression() {}
 
 type DecimalNumberZ struct {
-	Token
+	nom.Span[rune]
 	SizeT, BaseT, Z nom.Span[rune]
 	Size            uint
 }
@@ -96,15 +98,16 @@ func (d *DecimalNumberZ) Bake() error {
 	return nil
 }
 
-func (*DecimalNumberZ) isDecimalNumber()   {}
-func (*DecimalNumberZ) isIntegralNumber()  {}
-func (*DecimalNumberZ) isNumber()          {}
-func (*DecimalNumberZ) isPrimaryLiteral()  {}
-func (*DecimalNumberZ) isPrimary()         {}
-func (*DecimalNumberZ) isConstantPrimary() {}
+func (*DecimalNumberZ) isDecimalNumber()      {}
+func (*DecimalNumberZ) isIntegralNumber()     {}
+func (*DecimalNumberZ) isNumber()             {}
+func (*DecimalNumberZ) isPrimaryLiteral()     {}
+func (*DecimalNumberZ) isPrimary()            {}
+func (*DecimalNumberZ) isConstantPrimary()    {}
+func (*DecimalNumberZ) isConstantExpression() {}
 
 type BinaryNumber struct {
-	Token
+	nom.Span[rune]
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
@@ -122,14 +125,15 @@ func (d *BinaryNumber) Bake() error {
 	return err
 }
 
-func (*BinaryNumber) isIntegralNumber()  {}
-func (*BinaryNumber) isNumber()          {}
-func (*BinaryNumber) isPrimaryLiteral()  {}
-func (*BinaryNumber) isPrimary()         {}
-func (*BinaryNumber) isConstantPrimary() {}
+func (*BinaryNumber) isIntegralNumber()     {}
+func (*BinaryNumber) isNumber()             {}
+func (*BinaryNumber) isPrimaryLiteral()     {}
+func (*BinaryNumber) isPrimary()            {}
+func (*BinaryNumber) isConstantPrimary()    {}
+func (*BinaryNumber) isConstantExpression() {}
 
 type OctalNumber struct {
-	Token
+	nom.Span[rune]
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
@@ -147,14 +151,15 @@ func (d *OctalNumber) Bake() error {
 	return err
 }
 
-func (*OctalNumber) isIntegralNumber()  {}
-func (*OctalNumber) isNumber()          {}
-func (*OctalNumber) isPrimaryLiteral()  {}
-func (*OctalNumber) isPrimary()         {}
-func (*OctalNumber) isConstantPrimary() {}
+func (*OctalNumber) isIntegralNumber()     {}
+func (*OctalNumber) isNumber()             {}
+func (*OctalNumber) isPrimaryLiteral()     {}
+func (*OctalNumber) isPrimary()            {}
+func (*OctalNumber) isConstantPrimary()    {}
+func (*OctalNumber) isConstantExpression() {}
 
 type HexNumber struct {
-	Token
+	nom.Span[rune]
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
@@ -172,18 +177,19 @@ func (d *HexNumber) Bake() error {
 	return err
 }
 
-func (*HexNumber) isIntegralNumber()  {}
-func (*HexNumber) isNumber()          {}
-func (*HexNumber) isPrimaryLiteral()  {}
-func (*HexNumber) isPrimary()         {}
-func (*HexNumber) isConstantPrimary() {}
+func (*HexNumber) isIntegralNumber()     {}
+func (*HexNumber) isNumber()             {}
+func (*HexNumber) isPrimaryLiteral()     {}
+func (*HexNumber) isPrimary()            {}
+func (*HexNumber) isConstantPrimary()    {}
+func (*HexNumber) isConstantExpression() {}
 
 type RealNumber interface {
 	isReal()
 }
 
 type FloatingPointNumber struct {
-	Token
+	nom.Span[rune]
 	Value float64
 }
 
@@ -192,7 +198,7 @@ func (d *FloatingPointNumber) String() string {
 }
 
 func (d *FloatingPointNumber) Bake() error {
-	val, err := parseFloat(d.Token)
+	val, err := parseFloat(d.Span)
 	if err != nil {
 		return err
 	}
@@ -200,14 +206,15 @@ func (d *FloatingPointNumber) Bake() error {
 	return nil
 }
 
-func (*FloatingPointNumber) isReal()            {}
-func (*FloatingPointNumber) isNumber()          {}
-func (*FloatingPointNumber) isPrimaryLiteral()  {}
-func (*FloatingPointNumber) isPrimary()         {}
-func (*FloatingPointNumber) isConstantPrimary() {}
+func (*FloatingPointNumber) isReal()               {}
+func (*FloatingPointNumber) isNumber()             {}
+func (*FloatingPointNumber) isPrimaryLiteral()     {}
+func (*FloatingPointNumber) isPrimary()            {}
+func (*FloatingPointNumber) isConstantPrimary()    {}
+func (*FloatingPointNumber) isConstantExpression() {}
 
 type FixedPointNumber struct {
-	Token
+	nom.Span[rune]
 	Value float64
 }
 
@@ -216,7 +223,7 @@ func (d *FixedPointNumber) String() string {
 }
 
 func (d *FixedPointNumber) Bake() error {
-	val, err := parseFloat(d.Token)
+	val, err := parseFloat(d.Span)
 	if err != nil {
 		return err
 	}
@@ -224,14 +231,15 @@ func (d *FixedPointNumber) Bake() error {
 	return nil
 }
 
-func (*FixedPointNumber) isReal()            {}
-func (*FixedPointNumber) isNumber()          {}
-func (*FixedPointNumber) isPrimaryLiteral()  {}
-func (*FixedPointNumber) isPrimary()         {}
-func (*FixedPointNumber) isConstantPrimary() {}
+func (*FixedPointNumber) isReal()               {}
+func (*FixedPointNumber) isNumber()             {}
+func (*FixedPointNumber) isPrimaryLiteral()     {}
+func (*FixedPointNumber) isPrimary()            {}
+func (*FixedPointNumber) isConstantPrimary()    {}
+func (*FixedPointNumber) isConstantExpression() {}
 
 type UnsignedNumber struct {
-	Token
+	nom.Span[rune]
 	Value uint64
 }
 
@@ -248,41 +256,43 @@ func (d *UnsignedNumber) Bake() error {
 	return nil
 }
 
-func (*UnsignedNumber) isDecimalNumber()   {}
-func (*UnsignedNumber) isIntegralNumber()  {}
-func (*UnsignedNumber) isNumber()          {}
-func (*UnsignedNumber) isPrimaryLiteral()  {}
-func (*UnsignedNumber) isPrimary()         {}
-func (*UnsignedNumber) isConstantPrimary() {}
+func (*UnsignedNumber) isDecimalNumber()      {}
+func (*UnsignedNumber) isIntegralNumber()     {}
+func (*UnsignedNumber) isNumber()             {}
+func (*UnsignedNumber) isPrimaryLiteral()     {}
+func (*UnsignedNumber) isPrimary()            {}
+func (*UnsignedNumber) isConstantPrimary()    {}
+func (*UnsignedNumber) isConstantExpression() {}
 
 type UnbasedUnsizedLiteral struct {
-	Token
+	nom.Span[rune]
 	Value rune
 }
 
 func (d *UnbasedUnsizedLiteral) String() string {
-	return fmt.Sprintf("UnbasedUnsizedLiteral(%v)", d.Token)
+	return fmt.Sprintf("UnbasedUnsizedLiteral(%v)", d.Span)
 }
 
 func (d *UnbasedUnsizedLiteral) Bake() error {
-	if len(d.Token.Value()) != 2 {
-		return fmt.Errorf("invalid unsized literal: %q", d.Token.Value())
+	if len(d.Span.Value()) != 2 {
+		return fmt.Errorf("invalid unsized literal: %q", d.Span.Value())
 	}
-	d.Value = []rune(d.Token.Value())[1]
+	d.Value = []rune(d.Span.Value())[1]
 	return nil
 }
 
-func (*UnbasedUnsizedLiteral) isPrimaryLiteral()  {}
-func (*UnbasedUnsizedLiteral) isPrimary()         {}
-func (*UnbasedUnsizedLiteral) isConstantPrimary() {}
+func (*UnbasedUnsizedLiteral) isPrimaryLiteral()     {}
+func (*UnbasedUnsizedLiteral) isPrimary()            {}
+func (*UnbasedUnsizedLiteral) isConstantPrimary()    {}
+func (*UnbasedUnsizedLiteral) isConstantExpression() {}
 
 func parseUint(t nom.Span[rune], base, size int) (uint64, error) {
 	s := strings.ReplaceAll(string(t.Value()), "_", "")
 	return strconv.ParseUint(s, base, size)
 }
 
-func parseFloat(t Token) (float64, error) {
-	s := strings.ReplaceAll(t.Value(), "_", "")
+func parseFloat(t nom.Span[rune]) (float64, error) {
+	s := strings.ReplaceAll(string(t.Value()), "_", "")
 	return strconv.ParseFloat(s, 64)
 }
 
