@@ -24,3 +24,7 @@ func (s *StringLiteral) Bake() error {
 	s.Text = text
 	return nil
 }
+
+func (*StringLiteral) isPrimaryLiteral()  {}
+func (*StringLiteral) isPrimary()         {}
+func (*StringLiteral) isConstantPrimary() {}

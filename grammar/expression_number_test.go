@@ -25,3 +25,16 @@ func TestNumber(t *testing.T) {
 		validate(t, "Number", Number, tc)
 	}
 }
+
+func TestUnbasedUnsizedLiteral(t *testing.T) {
+	testCases := []testCase[*ast.UnbasedUnsizedLiteral]{
+		{in: "'0", want: &ast.UnbasedUnsizedLiteral{Value: '0'}},
+		{in: "'1", want: &ast.UnbasedUnsizedLiteral{Value: '1'}},
+		{in: "'x", want: &ast.UnbasedUnsizedLiteral{Value: 'x'}},
+		{in: "'z", want: &ast.UnbasedUnsizedLiteral{Value: 'z'}},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "UnbasedUnsizedLiteral", UnbasedUnsizedLiteral, tc)
+	}
+}
