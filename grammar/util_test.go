@@ -22,7 +22,17 @@ type testCase[T any] struct {
 func validateTrace[T, U any](t *testing.T, name string, fn nom.ParseFn[rune, T], tc testCase[U]) {
 	t.Helper()
 	trace.TraceSupported()
-	ctx := trace.WithTracing(trace.WithTracer(context.Background(), printtracer.New[rune]()))
+	ctx := trace.WithTracing(
+		trace.WithTracer(
+			context.Background(),
+			func() trace.Tracer[rune] {
+				op := &printtracer.Options[rune]{}
+				op.IncludePackage("grammar")
+				op.Exclude(`grammar\.[a-z]`)
+				return op.Tracer()
+			}(),
+		),
+	)
 	validateHelper(t, ctx, name, fn, tc)
 }
 

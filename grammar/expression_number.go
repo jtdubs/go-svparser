@@ -20,10 +20,10 @@ import (
  *   | real_number
  */
 func Number(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Number, error) {
-	return trace.Trace(fn.Alt(
+	return tAlt(
 		to[ast.Number](RealNumber),
 		to[ast.Number](IntegralNumber),
-	))(ctx, start)
+	)(ctx, start)
 }
 
 /*
@@ -34,12 +34,12 @@ func Number(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.
  *   | hex_number
  */
 func IntegralNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegralNumber, error) {
-	return trace.Trace(fn.Alt(
+	return tAlt(
 		to[ast.IntegralNumber](octalNumber),
 		to[ast.IntegralNumber](binaryNumber),
 		to[ast.IntegralNumber](hexNumber),
 		to[ast.IntegralNumber](DecimalNumber),
-	))(ctx, start)
+	)(ctx, start)
 }
 
 /*
@@ -50,12 +50,12 @@ func IntegralNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  *   | [ size ] decimal_base z_digit { _ }
  */
 func DecimalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.DecimalNumber, error) {
-	return trace.Trace(fn.Alt(
+	return tAlt(
 		to[ast.DecimalNumber](decimalNumberX),
 		to[ast.DecimalNumber](decimalNumberZ),
 		to[ast.DecimalNumber](decimalNumberUnsigned),
 		to[ast.DecimalNumber](UnsignedNumber),
-	))(ctx, start)
+	)(ctx, start)
 }
 
 /*
@@ -169,10 +169,10 @@ func nonZeroUnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cur
  *   | unsigned_number [ . unsigned_number ] exp [ sign ] unsigned_number
  */
 func RealNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.RealNumber, error) {
-	return trace.Trace(fn.Alt(
+	return tAlt(
 		to[ast.RealNumber](FloatingPointNumber),
 		to[ast.RealNumber](FixedPointNumber),
-	))(ctx, start)
+	)(ctx, start)
 }
 
 /*

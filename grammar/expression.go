@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jtdubs/go-nom"
+	"github.com/jtdubs/go-nom/cache"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-nom/trace"
@@ -22,20 +23,22 @@ import (
  *   | constant_expression ? { attribute_instance } constant_expression : constant_expression
  */
 func ConstantExpression(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.ConstantExpression, error) {
-	end, expr, err := trace.Trace(fn.Alt(
-		to[ast.ConstantExpression](ConstantPrimary),
-		to[ast.ConstantExpression](constantUnaryExpression),
-	))(ctx, start)
+	return cache.Cache(trace.Trace(func(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.ConstantExpression, error) {
+		end, expr, err := fn.Alt(
+			to[ast.ConstantExpression](ConstantPrimary),
+			to[ast.ConstantExpression](constantUnaryExpression),
+		)(ctx, start)
 
-	if err != nil {
-		return start, nil, err
-	}
+		if err != nil {
+			return start, nil, err
+		}
 
-	return trace.Trace(fn.Alt(
-		to[ast.ConstantExpression](constantBinaryExpression(expr)),
-		to[ast.ConstantExpression](constantTernaryExpression(expr)),
-		fn.Success[rune](expr),
-	))(ctx, end)
+		return fn.Alt(
+			to[ast.ConstantExpression](constantBinaryExpression(expr)),
+			to[ast.ConstantExpression](constantTernaryExpression(expr)),
+			fn.Success[rune](expr),
+		)(ctx, end)
+	}))(ctx, start)
 }
 
 /*

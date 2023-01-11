@@ -242,6 +242,9 @@ func (i *GenvarIdentifier) String() string {
 	return fmt.Sprintf("GenvarIdentifier(%v)", i.ID)
 }
 
+func (*GenvarIdentifier) isConstantPrimary()    {}
+func (*GenvarIdentifier) isConstantExpression() {}
+
 type IndexVariableIdentifier struct {
 	nom.Span[rune]
 	ID Identifier

@@ -47,3 +47,12 @@ func (e *ConstantTernaryExpression) String() string {
 }
 
 func (*ConstantTernaryExpression) isConstantExpression() {}
+
+type ConstantBitSelect struct {
+	nom.Span[rune]
+	Exprs []ConstantExpression
+}
+
+func (e *ConstantBitSelect) String() string {
+	return fmt.Sprintf("ConstantBitSelect(%v)", e.Exprs)
+}

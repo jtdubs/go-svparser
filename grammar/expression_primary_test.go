@@ -32,3 +32,33 @@ func TestPrimaryLiteral(t *testing.T) {
 		validate(t, "PrimaryLiteral", PrimaryLiteral, tc)
 	}
 }
+
+func TestConstantBitSelect(t *testing.T) {
+	testCases := []testCase[*ast.ConstantBitSelect]{
+		{
+			in: ` [42]`,
+			want: &ast.ConstantBitSelect{
+				Exprs: []ast.ConstantExpression{
+					&ast.UnsignedNumber{Value: 42},
+				},
+			},
+		},
+		{
+			in: ` [ 42  ]  [ 3+  7 ]`,
+			want: &ast.ConstantBitSelect{
+				Exprs: []ast.ConstantExpression{
+					&ast.UnsignedNumber{Value: 42},
+					&ast.ConstantBinaryExpression{
+						Left:  &ast.UnsignedNumber{Value: 3},
+						Op:    &ast.BinaryOperator{Op: ast.BinaryAdd},
+						Right: &ast.UnsignedNumber{Value: 7},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		validateTrace(t, "ConstantBitSelect", ConstantBitSelect, tc)
+	}
+}

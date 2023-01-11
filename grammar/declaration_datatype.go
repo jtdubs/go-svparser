@@ -6,7 +6,6 @@ import (
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
-	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
@@ -77,10 +76,10 @@ import (
  * integer_type ::= integer_vector_type | integer_atom_type
  */
 func IntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegerType, error) {
-	return trace.Trace(fn.Alt(
+	return tAlt(
 		to[ast.IntegerType](IntegerVectorType),
 		to[ast.IntegerType](IntegerAtomType),
-	))(ctx, start)
+	)(ctx, start)
 }
 
 /*

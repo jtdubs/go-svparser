@@ -6,7 +6,6 @@ import (
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
-	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
@@ -33,23 +32,23 @@ import (
  *   | null
  */
 func ConstantPrimary(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.ConstantPrimary, error) {
-	return trace.Trace(fn.Alt(
+	return tAlt(
 		to[ast.ConstantPrimary](PrimaryLiteral),
 		to[ast.ConstantPrimary](GenvarIdentifier),
 		// TODO(justindubs): the rest of the owl
-	))(ctx, start)
+	)(ctx, start)
 }
 
 /*
  * primary_literal ::= number | time_literal | unbased_unsized_literal | string_literal
  */
 func PrimaryLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.PrimaryLiteral, error) {
-	return trace.Trace(fn.Alt(
+	return tAlt(
 		to[ast.PrimaryLiteral](UnbasedUnsizedLiteral),
 		to[ast.PrimaryLiteral](StringLiteral),
 		to[ast.PrimaryLiteral](TimeLiteral),
 		to[ast.PrimaryLiteral](Number),
-	))(ctx, start)
+	)(ctx, start)
 }
 
 /*
@@ -89,5 +88,21 @@ func TimeUnit(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *a
 				fn.Value(ast.S, runes.TagNoCase("s")),
 			),
 		),
+	)(ctx, start)
+}
+
+/*
+ * constant_bit_select ::= { [ constant_expression ] }
+ */
+func ConstantBitSelect(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ConstantBitSelect, error) {
+	res := &ast.ConstantBitSelect{}
+	return tBind(res, &res.Span,
+		bindValue(&res.Exprs, fn.Many0(
+			fn.Surrounded(
+				word(runes.Rune('[')),
+				word(runes.Rune(']')),
+				ConstantExpression,
+			),
+		)),
 	)(ctx, start)
 }
