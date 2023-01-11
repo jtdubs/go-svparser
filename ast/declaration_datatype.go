@@ -6,6 +6,10 @@ import (
 	"github.com/jtdubs/go-nom"
 )
 
+type IntegerType interface {
+	isIntegerType()
+}
+
 type IntegerAtomTypeOption int
 
 const (
@@ -35,6 +39,8 @@ func (u *IntegerAtomType) String() string {
 	return fmt.Sprintf("IntegerAtomType(%v)", integerAtomTypeNames[u.Type])
 }
 
+func (*IntegerAtomType) isIntegerType() {}
+
 type IntegerVectorTypeOption int
 
 const (
@@ -57,6 +63,8 @@ type IntegerVectorType struct {
 func (u *IntegerVectorType) String() string {
 	return fmt.Sprintf("IntegerVectorType(%v)", integerVectorTypeNames[u.Type])
 }
+
+func (*IntegerVectorType) isIntegerType() {}
 
 type NonIntegerTypeOption int
 

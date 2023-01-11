@@ -6,6 +6,7 @@ import (
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
+	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
@@ -75,6 +76,12 @@ import (
 /*
  * integer_type ::= integer_vector_type | integer_atom_type
  */
+func IntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegerType, error) {
+	return trace.Trace(fn.Alt(
+		to[ast.IntegerType](IntegerVectorType),
+		to[ast.IntegerType](IntegerAtomType),
+	))(ctx, start)
+}
 
 /*
  * integer_atom_type ::= byte | shortint | int | longint | integer | time
@@ -185,6 +192,12 @@ func Signing(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *as
 /*
  * simple_type ::= integer_type | non_integer_type | ps_type_identifier | ps_parameter_identifier
  */
+func SimpleType() {
+	_ = fn.Discard(IntegerType)
+	_ = fn.Discard(NonIntegerType)
+	// PsTypeIdentifier()
+	// PsParameterIdentifier()
+}
 
 /*
  * struct_union_member16 ::=
