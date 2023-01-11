@@ -22,12 +22,20 @@ import (
  *   | constant_expression ? { attribute_instance } constant_expression : constant_expression
  */
 func ConstantExpression(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.ConstantExpression, error) {
-	return trace.Trace(fn.Alt(
-		to[ast.ConstantExpression](constantUnaryExpression),
-		to[ast.ConstantExpression](constantBinaryExpression),
-		to[ast.ConstantExpression](constantTernaryExpression),
+	end, expr, err := trace.Trace(fn.Alt(
 		to[ast.ConstantExpression](ConstantPrimary),
+		to[ast.ConstantExpression](constantUnaryExpression),
 	))(ctx, start)
+
+	if err != nil {
+		return start, nil, err
+	}
+
+	return trace.Trace(fn.Alt(
+		to[ast.ConstantExpression](constantBinaryExpression(expr)),
+		to[ast.ConstantExpression](constantTernaryExpression(expr)),
+		fn.Success[rune](expr),
+	))(ctx, end)
 }
 
 /*
@@ -51,14 +59,13 @@ func constantUnaryExpression(ctx context.Context, start nom.Cursor[rune]) (nom.C
  *   | constant_expression binary_operator { attribute_instance } constant_expression
  *   ...
  */
-func constantBinaryExpression(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ConstantBinaryExpression, error) {
-	res := &ast.ConstantBinaryExpression{}
+func constantBinaryExpression(left ast.ConstantExpression) nom.ParseFn[rune, *ast.ConstantBinaryExpression] {
+	res := &ast.ConstantBinaryExpression{Left: left}
 	return tBindPhrase(res, &res.Span,
-		fn.Bind(&res.Left, ConstantExpression),
 		fn.Bind(&res.Op, BinaryOperator),
 		fn.Opt(fn.Bind(&res.Attrs, fn.Many1(AttributeInstance))),
 		fn.Bind(&res.Right, ConstantExpression),
-	)(ctx, start)
+	)
 }
 
 /*
@@ -67,8 +74,8 @@ func constantBinaryExpression(ctx context.Context, start nom.Cursor[rune]) (nom.
  *   | constant_expression ? { attribute_instance } constant_expression : constant_expression
  *   ...
  */
-func constantTernaryExpression(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ConstantTernaryExpression, error) {
-	res := &ast.ConstantTernaryExpression{}
+func constantTernaryExpression(cond ast.ConstantExpression) nom.ParseFn[rune, *ast.ConstantTernaryExpression] {
+	res := &ast.ConstantTernaryExpression{Cond: cond}
 	return tBindPhrase(res, &res.Span,
 		fn.Bind(&res.Cond, ConstantExpression),
 		fn.Discard(runes.Rune('?')),
@@ -76,5 +83,5 @@ func constantTernaryExpression(ctx context.Context, start nom.Cursor[rune]) (nom
 		fn.Bind(&res.If, ConstantExpression),
 		fn.Discard(runes.Rune(':')),
 		fn.Bind(&res.Else, ConstantExpression),
-	)(ctx, start)
+	)
 }
