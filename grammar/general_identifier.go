@@ -212,6 +212,55 @@ func GenvarIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
 }
 
 /*
+ * hierarchical_array_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_block_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_event_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_identifier ::= [ $root . ] { identifier constant_bit_select . } identifier
+ */
+func HierarchicalIdentifier() {
+	_ = fn.Discard(Identifier)
+	// TODO(justindubs): _ = fn.Discard(ConstantBitSelect)
+	_ = fn.Discard(Identifier)
+}
+
+/*
+ * hierarchical_net_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_parameter_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_property_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_sequence_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_task_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_tf_identifier ::= hierarchical_identifier
+ */
+
+/*
+ * hierarchical_variable_identifier ::= hierarchical_identifier
+ */
+
+/*
  * identifier ::=
  *   simple_identifier
  * | escaped_identifier
@@ -346,6 +395,16 @@ func PackageIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[
 }
 
 /*
+ * package_scope ::=
+ *   package_identifier ::
+ *   | $unit ::
+ */
+func PackageScope() {
+	_ = fn.Discard(PackageIdentifier)
+	// TODO(justindubs): implement me
+}
+
+/*
  * parameter_identifier ::= identifier
  */
 func ParameterIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ParameterIdentifier, error) {
@@ -383,6 +442,115 @@ func ProgramIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[
 func PropertyIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PropertyIdentifier, error) {
 	res := &ast.PropertyIdentifier{}
 	return tBind(res, &res.Span, bindValue(&res.ID, Identifier))(ctx, start)
+}
+
+/*
+ * ps_class_identifier ::= [ package_scope ] class_identifier
+ */
+func PsClassIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(ClassIdentifier)
+}
+
+/*
+ * ps_covergroup_identifier ::= [ package_scope ] covergroup_identifier
+ */
+func PsCovergroupIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(CovergroupIdentifier)
+}
+
+/*
+ * ps_checker_identifier ::= [ package_scope ] checker_identifier
+ */
+func PsCheckerIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(CheckerIdentifier)
+}
+
+/*
+ * ps_identifier ::= [ package_scope ] identifier
+ */
+func PsIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(Identifier)
+}
+
+/*
+ * ps_or_hierarchical_array_identifier ::=
+ *   [ implicit_class_handle . | class_scope | package_scope ] hierarchical_array_identifier
+ */
+func PsOrHierarchicalArrayIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	// TODO(justindubs): _ = fn.Discard(ImplicitClassHandle)
+	// TODO(justindubs): _ = fn.Discard(ClassScope)
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	// TODO(justindubs): _ = fn.Discard(HierarchicalArrayIdentifier)
+}
+
+/*
+ * ps_or_hierarchical_net_identifier ::= [ package_scope ] net_identifier | hierarchical_net_identifier
+ */
+func PsOrHierarchicalNetIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(NetIdentifier)
+	// TODO(justindubs): _ = fn.Discard(HierarchicalNetIdentifier)
+}
+
+/*
+ * ps_or_hierarchical_property_identifier ::=
+ *   [ package_scope ] property_identifier
+ *   | hierarchical_property_identifier
+ */
+func PsOrHierarchicalPropertyIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(PropertyIdentifier)
+	// TODO(justindubs): _ = fn.Discard(HierarchicalPropertyIdentifier)
+}
+
+/*
+ * ps_or_hierarchical_sequence_identifier ::=
+ *   [ package_scope ] sequence_identifier
+ *   | hierarchical_sequence_identifier
+ */
+func PsOrHierarchicalSequenceIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(SequenceIdentifier)
+	// TODO(justindubs): _ = fn.Discard(HierarchicalSequenceIdentifier)
+}
+
+/*
+ * ps_or_hierarchical_tf_identifier ::=
+ *   [ package_scope ] tf_identifier
+ *   | hierarchical_tf_identifier
+ */
+func PsOrHierarchicalTfIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	_ = fn.Discard(TfIdentifier)
+	// TODO(justindubs): _ = fn.Discard(HierarchicalTfIdentifier)
+}
+
+/*
+ * ps_parameter_identifier ::=
+ *   [ package_scope | class_scope ] parameter_identifier
+ *   | { generate_block_identifier [ [ constant_expression ] ] . } parameter_identifier
+ */
+func PsParameterIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	// TODO(justindubs): _ = fn.Discard(ClassScope)
+	_ = fn.Discard(ParameterIdentifier)
+	_ = fn.Discard(GenerateBlockIdentifier)
+	// TODO(justindubs): _ = fn.Discard(ConstantExpression)
+	_ = fn.Discard(ParameterIdentifier)
+}
+
+/*
+ * ps_type_identifier ::= [ local :: | package_scope | class_scope ] type_identifier
+ */
+func PsTypeIdentifier() {
+	// TODO(justindubs): _ = fn.Discard(PackageScope)
+	// TODO(justindubs): _ = fn.Discard(ClassScope)
+	_ = fn.Discard(TypeIdentifier)
 }
 
 /*
