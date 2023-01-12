@@ -2,8 +2,6 @@ package ast
 
 import (
 	"fmt"
-
-	"github.com/jtdubs/go-nom"
 )
 
 type UnaryOperatorType int
@@ -35,7 +33,7 @@ var unaryOperatorNames = map[UnaryOperatorType]string{
 }
 
 type UnaryOperator struct {
-	nom.Span[rune]
+	Token
 	Op UnaryOperatorType
 }
 
@@ -108,7 +106,7 @@ var binaryOperatorNames = map[BinaryOperatorType]string{
 }
 
 type BinaryOperator struct {
-	nom.Span[rune]
+	Token
 	Op BinaryOperatorType
 }
 
@@ -129,7 +127,7 @@ var incOrDecOperatorNames = map[IncOrDecOperatorType]string{
 }
 
 type IncOrDecOperator struct {
-	nom.Span[rune]
+	Token
 	Op IncOrDecOperatorType
 }
 
@@ -138,7 +136,7 @@ func (b *IncOrDecOperator) String() string {
 }
 
 type UnaryModulePathOperator struct {
-	nom.Span[rune]
+	Token
 	Op UnaryOperatorType
 }
 
@@ -147,7 +145,7 @@ func (b *UnaryModulePathOperator) String() string {
 }
 
 type BinaryModulePathOperator struct {
-	nom.Span[rune]
+	Token
 	Op BinaryOperatorType
 }
 

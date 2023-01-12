@@ -2,8 +2,6 @@ package ast
 
 import (
 	"fmt"
-
-	"github.com/jtdubs/go-nom"
 )
 
 type CMOSSwitchTypeOption int
@@ -19,7 +17,7 @@ var cmosSwitchTypeNames = map[CMOSSwitchTypeOption]string{
 }
 
 type CMOSSwitchType struct {
-	nom.Span[rune]
+	Token
 	Type CMOSSwitchTypeOption
 }
 
@@ -44,7 +42,7 @@ var enableGateTypeNames = map[EnableGateTypeOption]string{
 }
 
 type EnableGateType struct {
-	nom.Span[rune]
+	Token
 	Type EnableGateTypeOption
 }
 
@@ -69,7 +67,7 @@ var mosSwitchTypeNames = map[MOSSwitchTypeOption]string{
 }
 
 type MOSSwitchType struct {
-	nom.Span[rune]
+	Token
 	Type MOSSwitchTypeOption
 }
 
@@ -98,7 +96,7 @@ var nInputGateTypeNames = map[NInputGateTypeOption]string{
 }
 
 type NInputGateType struct {
-	nom.Span[rune]
+	Token
 	Type NInputGateTypeOption
 }
 
@@ -119,7 +117,7 @@ var nOutputGateTypeNames = map[NOutputGateTypeOption]string{
 }
 
 type NOutputGateType struct {
-	nom.Span[rune]
+	Token
 	Type NOutputGateTypeOption
 }
 
@@ -144,7 +142,7 @@ var passEnSwitchTypeNames = map[PassEnSwitchTypeOption]string{
 }
 
 type PassEnSwitchType struct {
-	nom.Span[rune]
+	Token
 	Type PassEnSwitchTypeOption
 }
 
@@ -165,7 +163,7 @@ var passSwitchTypeNames = map[PassSwitchTypeOption]string{
 }
 
 type PassSwitchType struct {
-	nom.Span[rune]
+	Token
 	Type PassSwitchTypeOption
 }
 

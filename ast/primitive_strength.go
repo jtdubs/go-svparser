@@ -7,7 +7,7 @@ import (
 )
 
 type PulldownStrength struct {
-	nom.Span[rune]
+	Token
 	ZeroT, OneT nom.Span[rune]
 	Zero        *Strength0
 	One         *Strength1
@@ -18,7 +18,7 @@ func (u *PulldownStrength) String() string {
 }
 
 type PullupStrength struct {
-	nom.Span[rune]
+	Token
 	ZeroT, OneT nom.Span[rune]
 	Zero        *Strength0
 	One         *Strength1

@@ -11,7 +11,7 @@ type Identifier interface {
 }
 
 type SimpleIdentifier struct {
-	nom.Span[rune]
+	Token
 	Name string
 }
 
@@ -27,7 +27,7 @@ func (i *SimpleIdentifier) Bake() error {
 func (*SimpleIdentifier) isIdentifier() {}
 
 type EscapedIdentifier struct {
-	nom.Span[rune]
+	Token
 	SlashT, NameT nom.Span[rune]
 	Name          string
 }
@@ -44,7 +44,7 @@ func (i *EscapedIdentifier) Bake() error {
 func (*EscapedIdentifier) isIdentifier() {}
 
 type CIdentifier struct {
-	nom.Span[rune]
+	Token
 	Name string
 }
 
@@ -58,7 +58,7 @@ func (i *CIdentifier) Bake() error {
 }
 
 type SystemTfIdentifier struct {
-	nom.Span[rune]
+	Token
 	Name string
 }
 
@@ -72,7 +72,7 @@ func (i *SystemTfIdentifier) Bake() error {
 }
 
 type ArrayIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -81,7 +81,7 @@ func (i *ArrayIdentifier) String() string {
 }
 
 type BlockIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -90,7 +90,7 @@ func (i *BlockIdentifier) String() string {
 }
 
 type BinIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -99,7 +99,7 @@ func (i *BinIdentifier) String() string {
 }
 
 type CellIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -108,7 +108,7 @@ func (i *CellIdentifier) String() string {
 }
 
 type CheckerIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -117,7 +117,7 @@ func (i *CheckerIdentifier) String() string {
 }
 
 type ClassIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -126,7 +126,7 @@ func (i *ClassIdentifier) String() string {
 }
 
 type ClockingIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -135,7 +135,7 @@ func (i *ClockingIdentifier) String() string {
 }
 
 type ConfigIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -144,7 +144,7 @@ func (i *ConfigIdentifier) String() string {
 }
 
 type ConstIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -153,7 +153,7 @@ func (i *ConstIdentifier) String() string {
 }
 
 type ConstraintIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -162,7 +162,7 @@ func (i *ConstraintIdentifier) String() string {
 }
 
 type CovergroupIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -171,7 +171,7 @@ func (i *CovergroupIdentifier) String() string {
 }
 
 type CoverPointIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -180,7 +180,7 @@ func (i *CoverPointIdentifier) String() string {
 }
 
 type CrossIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -189,7 +189,7 @@ func (i *CrossIdentifier) String() string {
 }
 
 type EnumIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -198,7 +198,7 @@ func (i *EnumIdentifier) String() string {
 }
 
 type FormalIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -207,7 +207,7 @@ func (i *FormalIdentifier) String() string {
 }
 
 type FormalPortIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -216,7 +216,7 @@ func (i *FormalPortIdentifier) String() string {
 }
 
 type FunctionIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -225,7 +225,7 @@ func (i *FunctionIdentifier) String() string {
 }
 
 type GenerateBlockIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -234,7 +234,7 @@ func (i *GenerateBlockIdentifier) String() string {
 }
 
 type GenvarIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -246,7 +246,7 @@ func (*GenvarIdentifier) isConstantPrimary()    {}
 func (*GenvarIdentifier) isConstantExpression() {}
 
 type IndexVariableIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -255,7 +255,7 @@ func (i *IndexVariableIdentifier) String() string {
 }
 
 type InterfaceIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -264,7 +264,7 @@ func (i *InterfaceIdentifier) String() string {
 }
 
 type InterfaceInstanceIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -273,7 +273,7 @@ func (i *InterfaceInstanceIdentifier) String() string {
 }
 
 type InoutPortIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -282,7 +282,7 @@ func (i *InoutPortIdentifier) String() string {
 }
 
 type InputPortIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -291,7 +291,7 @@ func (i *InputPortIdentifier) String() string {
 }
 
 type InstanceIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -300,7 +300,7 @@ func (i *InstanceIdentifier) String() string {
 }
 
 type LibraryIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -309,7 +309,7 @@ func (i *LibraryIdentifier) String() string {
 }
 
 type MemberIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -318,7 +318,7 @@ func (i *MemberIdentifier) String() string {
 }
 
 type MethodIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -327,7 +327,7 @@ func (i *MethodIdentifier) String() string {
 }
 
 type ModportIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -336,7 +336,7 @@ func (i *ModportIdentifier) String() string {
 }
 
 type ModuleIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -345,7 +345,7 @@ func (i *ModuleIdentifier) String() string {
 }
 
 type NetIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -354,7 +354,7 @@ func (i *NetIdentifier) String() string {
 }
 
 type NetTypeIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -363,7 +363,7 @@ func (i *NetTypeIdentifier) String() string {
 }
 
 type OutputPortIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -372,7 +372,7 @@ func (i *OutputPortIdentifier) String() string {
 }
 
 type PackageIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -381,7 +381,7 @@ func (i *PackageIdentifier) String() string {
 }
 
 type ParameterIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -390,7 +390,7 @@ func (i *ParameterIdentifier) String() string {
 }
 
 type PortIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -399,7 +399,7 @@ func (i *PortIdentifier) String() string {
 }
 
 type ProductionIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -408,7 +408,7 @@ func (i *ProductionIdentifier) String() string {
 }
 
 type ProgramIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -417,7 +417,7 @@ func (i *ProgramIdentifier) String() string {
 }
 
 type PropertyIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -426,7 +426,7 @@ func (i *PropertyIdentifier) String() string {
 }
 
 type SequenceIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -435,7 +435,7 @@ func (i *SequenceIdentifier) String() string {
 }
 
 type SignalIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -444,7 +444,7 @@ func (i *SignalIdentifier) String() string {
 }
 
 type SpecparamIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -453,7 +453,7 @@ func (i *SpecparamIdentifier) String() string {
 }
 
 type TaskIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -462,7 +462,7 @@ func (i *TaskIdentifier) String() string {
 }
 
 type TfIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -471,7 +471,7 @@ func (i *TfIdentifier) String() string {
 }
 
 type TerminalIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -480,7 +480,7 @@ func (i *TerminalIdentifier) String() string {
 }
 
 type TopmoduleIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -489,7 +489,7 @@ func (i *TopmoduleIdentifier) String() string {
 }
 
 type TypeIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -498,7 +498,7 @@ func (i *TypeIdentifier) String() string {
 }
 
 type UdpIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -507,7 +507,7 @@ func (i *UdpIdentifier) String() string {
 }
 
 type VariableIdentifier struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 
@@ -516,7 +516,7 @@ func (i *VariableIdentifier) String() string {
 }
 
 type ClassVariableIdentifier struct {
-	nom.Span[rune]
+	Token
 	Var *VariableIdentifier
 }
 
@@ -525,7 +525,7 @@ func (i *ClassVariableIdentifier) String() string {
 }
 
 type CovergroupVariableIdentifier struct {
-	nom.Span[rune]
+	Token
 	Var *VariableIdentifier
 }
 
@@ -534,7 +534,7 @@ func (i *CovergroupVariableIdentifier) String() string {
 }
 
 type DynamicArrayVariableIdentifier struct {
-	nom.Span[rune]
+	Token
 	Var *VariableIdentifier
 }
 
@@ -543,7 +543,7 @@ func (i *DynamicArrayVariableIdentifier) String() string {
 }
 
 type HierarchicalIdentifier struct {
-	nom.Span[rune]
+	Token
 	RootT nom.Span[rune]
 	Root  bool
 	Parts []*HierarchicalIdentifierPart
@@ -561,7 +561,7 @@ func (i *HierarchicalIdentifier) String() string {
 }
 
 type HierarchicalIdentifierPart struct {
-	nom.Span[rune]
+	Token
 	ID   Identifier
 	Bits *ConstantBitSelect
 }

@@ -31,7 +31,7 @@ var integerAtomTypeNames = map[IntegerAtomTypeOption]string{
 }
 
 type IntegerAtomType struct {
-	nom.Span[rune]
+	Token
 	Type IntegerAtomTypeOption
 }
 
@@ -56,7 +56,7 @@ var integerVectorTypeNames = map[IntegerVectorTypeOption]string{
 }
 
 type IntegerVectorType struct {
-	nom.Span[rune]
+	Token
 	Type IntegerVectorTypeOption
 }
 
@@ -81,7 +81,7 @@ var nonIntegerTypeNames = map[NonIntegerTypeOption]string{
 }
 
 type NonIntegerType struct {
-	nom.Span[rune]
+	Token
 	Type NonIntegerTypeOption
 }
 
@@ -122,7 +122,7 @@ var netTypeNames = map[NetTypeOption]string{
 }
 
 type NetType struct {
-	nom.Span[rune]
+	Token
 	Type NetTypeOption
 }
 
@@ -143,7 +143,7 @@ var signingNames = map[SigningOption]string{
 }
 
 type Signing struct {
-	nom.Span[rune]
+	Token
 	Type SigningOption
 }
 
@@ -156,7 +156,7 @@ type DriveStrengthOption interface {
 }
 
 type DriveStrength struct {
-	nom.Span[rune]
+	Token
 	AT, BT nom.Span[rune]
 	A, B   DriveStrengthOption
 }
@@ -166,7 +166,7 @@ func (u *DriveStrength) String() string {
 }
 
 type HighZ0 struct {
-	nom.Span[rune]
+	Token
 }
 
 func (*HighZ0) String() string {
@@ -176,7 +176,7 @@ func (*HighZ0) String() string {
 func (*HighZ0) isDriveStrengthOption() {}
 
 type HighZ1 struct {
-	nom.Span[rune]
+	Token
 }
 
 func (*HighZ1) String() string {
@@ -202,7 +202,7 @@ var strength0OptionNames = map[Strength0Option]string{
 }
 
 type Strength0 struct {
-	nom.Span[rune]
+	Token
 	Type Strength0Option
 }
 
@@ -229,7 +229,7 @@ var strength1OptionNames = map[Strength1Option]string{
 }
 
 type Strength1 struct {
-	nom.Span[rune]
+	Token
 	Type Strength1Option
 }
 
@@ -254,7 +254,7 @@ var chargeStrengthOptionNames = map[ChargeStrengthOption]string{
 }
 
 type ChargeStrength struct {
-	nom.Span[rune]
+	Token
 	TypeT nom.Span[rune]
 	Type  ChargeStrengthOption
 }

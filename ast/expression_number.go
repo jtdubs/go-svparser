@@ -24,7 +24,7 @@ type DecimalNumber interface {
 }
 
 type DecimalNumberUnsigned struct {
-	nom.Span[rune]
+	Token
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Size                 uint
 	Value                uint64
@@ -53,7 +53,7 @@ func (*DecimalNumberUnsigned) isConstantPrimary()    {}
 func (*DecimalNumberUnsigned) isConstantExpression() {}
 
 type DecimalNumberX struct {
-	nom.Span[rune]
+	Token
 	SizeT, BaseT, X nom.Span[rune]
 	Size            uint
 }
@@ -80,7 +80,7 @@ func (*DecimalNumberX) isConstantPrimary()    {}
 func (*DecimalNumberX) isConstantExpression() {}
 
 type DecimalNumberZ struct {
-	nom.Span[rune]
+	Token
 	SizeT, BaseT, Z nom.Span[rune]
 	Size            uint
 }
@@ -107,7 +107,7 @@ func (*DecimalNumberZ) isConstantPrimary()    {}
 func (*DecimalNumberZ) isConstantExpression() {}
 
 type BinaryNumber struct {
-	nom.Span[rune]
+	Token
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
@@ -133,7 +133,7 @@ func (*BinaryNumber) isConstantPrimary()    {}
 func (*BinaryNumber) isConstantExpression() {}
 
 type OctalNumber struct {
-	nom.Span[rune]
+	Token
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
@@ -159,7 +159,7 @@ func (*OctalNumber) isConstantPrimary()    {}
 func (*OctalNumber) isConstantExpression() {}
 
 type HexNumber struct {
-	nom.Span[rune]
+	Token
 	SizeT, BaseT, ValueT nom.Span[rune]
 	Value                MaskedInt
 }
@@ -189,7 +189,7 @@ type RealNumber interface {
 }
 
 type FloatingPointNumber struct {
-	nom.Span[rune]
+	Token
 	Value float64
 }
 
@@ -214,7 +214,7 @@ func (*FloatingPointNumber) isConstantPrimary()    {}
 func (*FloatingPointNumber) isConstantExpression() {}
 
 type FixedPointNumber struct {
-	nom.Span[rune]
+	Token
 	Value float64
 }
 
@@ -239,7 +239,7 @@ func (*FixedPointNumber) isConstantPrimary()    {}
 func (*FixedPointNumber) isConstantExpression() {}
 
 type UnsignedNumber struct {
-	nom.Span[rune]
+	Token
 	Value uint64
 }
 
@@ -265,7 +265,7 @@ func (*UnsignedNumber) isConstantPrimary()    {}
 func (*UnsignedNumber) isConstantExpression() {}
 
 type UnbasedUnsizedLiteral struct {
-	nom.Span[rune]
+	Token
 	Value rune
 }
 

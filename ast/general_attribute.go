@@ -2,23 +2,21 @@ package ast
 
 import (
 	"fmt"
-
-	"github.com/jtdubs/go-nom"
 )
 
 type AttributeInstance struct {
-	nom.Span[rune]
+	Token
 	Specs []*AttrSpec
 }
 
 type AttrSpec struct {
-	nom.Span[rune]
+	Token
 	Name *AttrName
 	Expr ConstantExpression
 }
 
 type AttrName struct {
-	nom.Span[rune]
+	Token
 	ID Identifier
 }
 

@@ -2,8 +2,6 @@ package ast
 
 import (
 	"fmt"
-
-	"github.com/jtdubs/go-nom"
 )
 
 type ConstantExpression interface {
@@ -11,7 +9,7 @@ type ConstantExpression interface {
 }
 
 type ConstantUnaryExpression struct {
-	nom.Span[rune]
+	Token
 	Op      *UnaryOperator
 	Attrs   []*AttributeInstance
 	Primary ConstantPrimary
@@ -24,7 +22,7 @@ func (e *ConstantUnaryExpression) String() string {
 func (*ConstantUnaryExpression) isConstantExpression() {}
 
 type ConstantBinaryExpression struct {
-	nom.Span[rune]
+	Token
 	Op          *BinaryOperator
 	Attrs       []*AttributeInstance
 	Left, Right ConstantExpression
@@ -37,7 +35,7 @@ func (e *ConstantBinaryExpression) String() string {
 func (*ConstantBinaryExpression) isConstantExpression() {}
 
 type ConstantTernaryExpression struct {
-	nom.Span[rune]
+	Token
 	Attrs          []*AttributeInstance
 	Cond, If, Else ConstantExpression
 }
@@ -49,7 +47,7 @@ func (e *ConstantTernaryExpression) String() string {
 func (*ConstantTernaryExpression) isConstantExpression() {}
 
 type ConstantBitSelect struct {
-	nom.Span[rune]
+	Token
 	Exprs []ConstantExpression
 }
 

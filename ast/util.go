@@ -3,9 +3,28 @@ package ast
 import (
 	"fmt"
 	"strings"
+
+	"github.com/jtdubs/go-nom"
 )
 
 // TODO(justindubs): consistent capturing of leading whitespace within tokens.
+
+type Token struct {
+	nom.Span[rune]
+}
+
+func (t *Token) GetSpan() nom.Span[rune] {
+	return t.Span
+}
+
+func (t *Token) SetSpan(s nom.Span[rune]) {
+	t.Span = s
+}
+
+type HasSpan interface {
+	GetSpan() nom.Span[rune]
+	SetSpan(nom.Span[rune])
+}
 
 type Bakeable interface {
 	Bake() error

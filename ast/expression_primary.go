@@ -2,8 +2,6 @@ package ast
 
 import (
 	"fmt"
-
-	"github.com/jtdubs/go-nom"
 )
 
 type ConstantPrimary interface {
@@ -22,7 +20,7 @@ type PrimaryLiteral interface {
 }
 
 type TimeLiteral struct {
-	nom.Span[rune]
+	Token
 	Number Number
 	Unit   *TimeUnit
 }
@@ -57,7 +55,7 @@ var timeUnitNames = map[TimeUnitOption]string{
 }
 
 type TimeUnit struct {
-	nom.Span[rune]
+	Token
 	Op TimeUnitOption
 }
 

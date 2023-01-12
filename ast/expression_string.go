@@ -3,12 +3,10 @@ package ast
 import (
 	"fmt"
 	"strconv"
-
-	"github.com/jtdubs/go-nom"
 )
 
 type StringLiteral struct {
-	nom.Span[rune]
+	Token
 	Text string
 }
 
