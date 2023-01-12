@@ -2,7 +2,6 @@ package grammar
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/cache"
@@ -29,7 +28,7 @@ func bindValue[T any](t *T, p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] 
 
 func to[O, I any](p nom.ParseFn[rune, I]) nom.ParseFn[rune, O] {
 	return fn.Map(p, func(i I) O {
-		return reflect.ValueOf(i).Interface().(O)
+		return any(i).(O)
 	})
 }
 
@@ -44,7 +43,7 @@ func bake[T ast.Bakeable](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
 }
 
 func tBind[T, U any](t T, s *nom.Span[rune], p nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	if b, ok := reflect.ValueOf(t).Interface().(ast.Bakeable); ok {
+	if b, ok := any(t).(ast.Bakeable); ok {
 		return cache.CacheN(1, trace.TraceN(1, to[T](bake(fn.Value(b, bindSpan(s, p))))))
 	} else {
 		return cache.CacheN(1, trace.TraceN(1, fn.Value(t, bindSpan(s, p))))
@@ -52,7 +51,7 @@ func tBind[T, U any](t T, s *nom.Span[rune], p nom.ParseFn[rune, U]) nom.ParseFn
 }
 
 func tBindSeq[T, U any](t T, s *nom.Span[rune], ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	if b, ok := reflect.ValueOf(t).Interface().(ast.Bakeable); ok {
+	if b, ok := any(t).(ast.Bakeable); ok {
 		return cache.CacheN(1, trace.TraceN(1, to[T](bake(fn.Value(b, bindSpan(s, fn.Seq(ps...)))))))
 	} else {
 		return cache.CacheN(1, trace.TraceN(1, fn.Value(t, bindSpan(s, fn.Seq(ps...)))))
@@ -60,7 +59,7 @@ func tBindSeq[T, U any](t T, s *nom.Span[rune], ps ...nom.ParseFn[rune, U]) nom.
 }
 
 func tBindPhrase[T, U any](t T, s *nom.Span[rune], ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	if b, ok := reflect.ValueOf(t).Interface().(ast.Bakeable); ok {
+	if b, ok := any(t).(ast.Bakeable); ok {
 		return cache.CacheN(1, trace.TraceN(1, to[T](bake(fn.Value(b, bindSpan(s, phrase(ps...)))))))
 	} else {
 		return cache.CacheN(1, trace.TraceN(1, fn.Value(t, bindSpan(s, phrase(ps...)))))

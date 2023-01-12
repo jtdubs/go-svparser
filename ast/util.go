@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+// TODO(justindubs): consistent capturing of leading whitespace within tokens.
+
 type Bakeable interface {
 	Bake() error
 }
