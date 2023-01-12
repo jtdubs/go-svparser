@@ -7,8 +7,6 @@ import (
 	"github.com/jtdubs/go-nom"
 )
 
-// TODO(justindubs): consistent capturing of leading whitespace within tokens.
-
 type Token struct {
 	nom.Span[rune]
 }

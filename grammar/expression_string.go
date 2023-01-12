@@ -6,7 +6,6 @@ import (
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
-	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
@@ -19,14 +18,21 @@ import (
  */
 func StringLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.StringLiteral, error) {
 	res := &ast.StringLiteral{}
-	return word(tBind(res, fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents)))(ctx, start)
+	return top(
+		// TODO(justindubs): capture whitespace
+		word(
+			token(res,
+				fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents),
+			),
+		),
+	)(ctx, start)
 }
 
 func stringContents(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], []rune, error) {
-	return trace.Trace(fn.Many0(
+	return fn.Many0(
 		fn.Alt(
 			fn.Preceded(fn.Satisfy(func(r rune) bool { return r == '\\' }), fn.Any[rune]),
 			fn.Satisfy(func(r rune) bool { return r != '\\' && r != '"' }),
 		),
-	))(ctx, start)
+	)(ctx, start)
 }

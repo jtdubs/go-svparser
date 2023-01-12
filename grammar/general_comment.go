@@ -6,7 +6,6 @@ import (
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
 	"github.com/jtdubs/go-nom/runes"
-	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
@@ -20,28 +19,34 @@ import (
  * | block_comment"
  */
 func Comment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Comment, error) {
-	return trace.Trace(fn.Alt(
-		to[ast.Comment](BlockComment),
-		to[ast.Comment](OneLineComment),
-	))(ctx, start)
+	return top(
+		fn.Alt(
+			to[ast.Comment](BlockComment),
+			to[ast.Comment](OneLineComment),
+		),
+	)(ctx, start)
 }
 
 // block_comment ::= /* comment_text */
 func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
 	res := &ast.BlockComment{}
-	return tBindSeq(res,
-		fn.Discard(runes.Tag("/*")),
-		bindSpan(&res.TextT,
-			runes.Join(
-				fn.First(
-					fn.ManyTill(
-						fn.Any[rune],
-						fn.Peek(runes.Tag("*/")),
+	return top(
+		token(res,
+			fn.Seq(
+				fn.Discard(runes.Tag("/*")),
+				bindSpan(&res.TextT,
+					runes.Join(
+						fn.First(
+							fn.ManyTill(
+								fn.Any[rune],
+								fn.Peek(runes.Tag("*/")),
+							),
+						),
 					),
 				),
+				fn.Discard(runes.Tag("*/")),
 			),
 		),
-		fn.Discard(runes.Tag("*/")),
 	)(ctx, start)
 }
 
@@ -50,18 +55,22 @@ func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune]
  */
 func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
 	res := &ast.OneLineComment{}
-	return tBindSeq(res,
-		fn.Discard(runes.Tag("//")),
-		bindSpan(&res.TextT,
-			runes.Join(
-				fn.First(
-					fn.ManyTill(
-						fn.Any[rune],
-						fn.Peek(runes.Newline),
+	return top(
+		token(res,
+			fn.Seq(
+				fn.Discard(runes.Tag("//")),
+				bindSpan(&res.TextT,
+					runes.Join(
+						fn.First(
+							fn.ManyTill(
+								fn.Any[rune],
+								fn.Peek(runes.Newline),
+							),
+						),
 					),
 				),
+				fn.Discard(runes.Newline),
 			),
 		),
-		fn.Discard(runes.Newline),
 	)(ctx, start)
 }

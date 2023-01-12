@@ -32,10 +32,12 @@ import (
  *   | null
  */
 func ConstantPrimary(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.ConstantPrimary, error) {
-	return tAlt(
-		to[ast.ConstantPrimary](PrimaryLiteral),
-		to[ast.ConstantPrimary](GenvarIdentifier),
-		// TODO(justindubs): the rest of the owl
+	return top(
+		fn.Alt(
+			to[ast.ConstantPrimary](PrimaryLiteral),
+			to[ast.ConstantPrimary](GenvarIdentifier),
+			// TODO(justindubs): the rest of the owl
+		),
 	)(ctx, start)
 }
 
@@ -43,11 +45,13 @@ func ConstantPrimary(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[ru
  * primary_literal ::= number | time_literal | unbased_unsized_literal | string_literal
  */
 func PrimaryLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.PrimaryLiteral, error) {
-	return tAlt(
-		to[ast.PrimaryLiteral](UnbasedUnsizedLiteral),
-		to[ast.PrimaryLiteral](StringLiteral),
-		to[ast.PrimaryLiteral](TimeLiteral),
-		to[ast.PrimaryLiteral](Number),
+	return top(
+		fn.Alt(
+			to[ast.PrimaryLiteral](UnbasedUnsizedLiteral),
+			to[ast.PrimaryLiteral](StringLiteral),
+			to[ast.PrimaryLiteral](TimeLiteral),
+			to[ast.PrimaryLiteral](Number),
+		),
 	)(ctx, start)
 }
 
@@ -58,15 +62,17 @@ func PrimaryLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func TimeLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.TimeLiteral, error) {
 	res := &ast.TimeLiteral{}
-	return tBind(res,
-		fn.Alt(
-			fn.Seq(
-				fn.Bind(&res.Number, to[ast.Number](UnsignedNumber)),
-				fn.Bind(&res.Unit, TimeUnit),
-			),
-			fn.Seq(
-				fn.Bind(&res.Number, to[ast.Number](FixedPointNumber)),
-				fn.Bind(&res.Unit, TimeUnit),
+	return top(
+		token(res,
+			fn.Alt(
+				fn.Seq(
+					fn.Bind(&res.Number, to[ast.Number](UnsignedNumber)),
+					fn.Bind(&res.Unit, TimeUnit),
+				),
+				fn.Seq(
+					fn.Bind(&res.Number, to[ast.Number](FixedPointNumber)),
+					fn.Bind(&res.Unit, TimeUnit),
+				),
 			),
 		),
 	)(ctx, start)
@@ -77,15 +83,17 @@ func TimeLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune],
  */
 func TimeUnit(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.TimeUnit, error) {
 	res := &ast.TimeUnit{}
-	return tBind(res,
-		fn.Bind(&res.Op,
-			fn.Alt(
-				fn.Value(ast.MS, runes.TagNoCase("ms")),
-				fn.Value(ast.US, runes.TagNoCase("us")),
-				fn.Value(ast.NS, runes.TagNoCase("ns")),
-				fn.Value(ast.PS, runes.TagNoCase("ps")),
-				fn.Value(ast.FS, runes.TagNoCase("fs")),
-				fn.Value(ast.S, runes.TagNoCase("s")),
+	return top(
+		token(res,
+			fn.Bind(&res.Op,
+				fn.Alt(
+					fn.Value(ast.MS, runes.TagNoCase("ms")),
+					fn.Value(ast.US, runes.TagNoCase("us")),
+					fn.Value(ast.NS, runes.TagNoCase("ns")),
+					fn.Value(ast.PS, runes.TagNoCase("ps")),
+					fn.Value(ast.FS, runes.TagNoCase("fs")),
+					fn.Value(ast.S, runes.TagNoCase("s")),
+				),
 			),
 		),
 	)(ctx, start)
@@ -96,13 +104,11 @@ func TimeUnit(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *a
  */
 func ConstantBitSelect(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ConstantBitSelect, error) {
 	res := &ast.ConstantBitSelect{}
-	return tBind(res,
-		bindValue(&res.Exprs, fn.Many0(
-			fn.Surrounded(
-				word(runes.Rune('[')),
-				word(runes.Rune(']')),
-				ConstantExpression,
+	return top(
+		token(res,
+			bind(&res.Exprs,
+				fn.Many0(brackets(ConstantExpression)),
 			),
-		)),
+		),
 	)(ctx, start)
 }

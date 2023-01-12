@@ -5,7 +5,6 @@ import (
 
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/fn"
-	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-svparser/ast"
 )
 
@@ -21,18 +20,20 @@ import (
  */
 func PulldownStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PulldownStrength, error) {
 	res := &ast.PulldownStrength{}
-	return tBind(res,
-		parens(
-			fn.Alt(
-				phrase(
-					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0)),
-					fn.Discard(runes.Rune(',')),
-					bindSpan(&res.OneT, bindValue(&res.One, Strength1))),
-				phrase(
-					bindSpan(&res.OneT, bindValue(&res.One, Strength1)),
-					fn.Discard(runes.Rune(',')),
-					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0))),
-				bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0)),
+	return top(
+		token(res,
+			parens(
+				fn.Alt(
+					phrase(
+						bind(&res.Zero, Strength0),
+						comma,
+						bind(&res.One, Strength1)),
+					phrase(
+						bind(&res.One, Strength1),
+						comma,
+						bind(&res.Zero, Strength0)),
+					bind(&res.Zero, Strength0),
+				),
 			),
 		),
 	)(ctx, start)
@@ -46,19 +47,19 @@ func PulldownStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
  */
 func PullupStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PullupStrength, error) {
 	res := &ast.PullupStrength{}
-	return tBind(res,
+	return top(token(res,
 		parens(
 			fn.Alt(
 				phrase(
-					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0)),
-					fn.Discard(runes.Rune(',')),
-					bindSpan(&res.OneT, bindValue(&res.One, Strength1))),
+					bind(&res.Zero, Strength0),
+					comma,
+					bind(&res.One, Strength1)),
 				phrase(
-					bindSpan(&res.OneT, bindValue(&res.One, Strength1)),
-					fn.Discard(runes.Rune(',')),
-					bindSpan(&res.ZeroT, bindValue(&res.Zero, Strength0))),
-				bindSpan(&res.ZeroT, bindValue(&res.One, Strength1)),
+					bind(&res.One, Strength1),
+					comma,
+					bind(&res.Zero, Strength0)),
+				bind(&res.One, Strength1),
 			),
 		),
-	)(ctx, start)
+	))(ctx, start)
 }

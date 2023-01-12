@@ -2,15 +2,12 @@ package ast
 
 import (
 	"fmt"
-
-	"github.com/jtdubs/go-nom"
 )
 
 type PulldownStrength struct {
 	Token
-	ZeroT, OneT nom.Span[rune]
-	Zero        *Strength0
-	One         *Strength1
+	Zero *Strength0
+	One  *Strength1
 }
 
 func (u *PulldownStrength) String() string {
@@ -19,9 +16,8 @@ func (u *PulldownStrength) String() string {
 
 type PullupStrength struct {
 	Token
-	ZeroT, OneT nom.Span[rune]
-	Zero        *Strength0
-	One         *Strength1
+	Zero *Strength0
+	One  *Strength1
 }
 
 func (u *PullupStrength) String() string {

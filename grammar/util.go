@@ -12,7 +12,7 @@ import (
 )
 
 func bindSpan[T any](t *nom.Span[rune], p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
-	return bindValue(t, fn.Spanning(p))
+	return bind(t, fn.Spanning(p))
 }
 
 func bindSpanT[T ast.HasSpan, U any](t T, p nom.ParseFn[rune, U]) nom.ParseFn[rune, struct{}] {
@@ -26,7 +26,7 @@ func bindSpanT[T ast.HasSpan, U any](t T, p nom.ParseFn[rune, U]) nom.ParseFn[ru
 	}
 }
 
-func bindValue[T any](t *T, p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
+func bind[T any](t *T, p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 	return func(ctx context.Context, start nom.Cursor[rune]) (end nom.Cursor[rune], res struct{}, err error) {
 		var val T
 		end, val, err = p(ctx, start)
@@ -56,35 +56,19 @@ func bake[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
 }
 
 func top[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
-	return cache.CacheN(2, trace.TraceN(2, p))
+	return cache.CacheN(1, trace.TraceN(1, p))
 }
 
-func tBind[T ast.HasSpan, U any](t T, p nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	return top(bake(fn.Value(t, bindSpanT(t, p))))
+func token[T ast.HasSpan, U any](t T, p nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
+	return bake(fn.Value(t, bindSpanT(t, p)))
 }
 
-func tBindSeq[T ast.HasSpan, U any](t T, ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	return top(bake(fn.Value(t, bindSpanT(t, fn.Seq(ps...)))))
+func join(ps ...nom.ParseFn[rune, rune]) nom.ParseFn[rune, string] {
+	return runes.Join(fn.Seq(ps...))
 }
 
-func tBindPhrase[T ast.HasSpan, U any](t T, ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	return top(bake(fn.Value(t, bindSpanT(t, phrase(ps...)))))
-}
-
-func tJoinSeq(ps ...nom.ParseFn[rune, rune]) nom.ParseFn[rune, string] {
-	return top(runes.Join(fn.Seq(ps...)))
-}
-
-func tConcatSeq(ps ...nom.ParseFn[rune, string]) nom.ParseFn[rune, string] {
-	return top(runes.Concat(fn.Seq(ps...)))
-}
-
-func tCons(p nom.ParseFn[rune, rune], ps nom.ParseFn[rune, string]) nom.ParseFn[rune, string] {
-	return top(runes.Cons(p, ps))
-}
-
-func tAlt[T any](ps ...nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
-	return top(fn.Alt(ps...))
+func concat(ps ...nom.ParseFn[rune, string]) nom.ParseFn[rune, string] {
+	return runes.Concat(fn.Seq(ps...))
 }
 
 func parens[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
@@ -92,6 +76,16 @@ func parens[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
 		fn.Surrounded(
 			word(runes.Rune('(')),
 			word(runes.Rune(')')),
+			word(p),
+		),
+	)
+}
+
+func brackets[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
+	return trace.Trace(
+		fn.Surrounded(
+			word(runes.Rune('[')),
+			word(runes.Rune(']')),
 			word(p),
 		),
 	)
@@ -108,3 +102,5 @@ func phrase[T any](ps ...nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 	}
 	return fn.Discard(fn.Seq(words...))
 }
+
+var comma = word(fn.Discard(runes.Rune(',')))
