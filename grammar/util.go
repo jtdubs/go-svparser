@@ -60,15 +60,15 @@ func top[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
 }
 
 func tBind[T ast.HasSpan, U any](t T, p nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	return top(to[T](bake(fn.Value(t, bindSpanT(t, p)))))
+	return top(bake(fn.Value(t, bindSpanT(t, p))))
 }
 
 func tBindSeq[T ast.HasSpan, U any](t T, ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	return top(to[T](bake(fn.Value(t, bindSpanT(t, fn.Seq(ps...))))))
+	return top(bake(fn.Value(t, bindSpanT(t, fn.Seq(ps...)))))
 }
 
 func tBindPhrase[T ast.HasSpan, U any](t T, ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	return top(to[T](bake(fn.Value(t, bindSpanT(t, phrase(ps...))))))
+	return top(bake(fn.Value(t, bindSpanT(t, phrase(ps...)))))
 }
 
 func tJoinSeq(ps ...nom.ParseFn[rune, rune]) nom.ParseFn[rune, string] {
