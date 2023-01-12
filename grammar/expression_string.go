@@ -19,7 +19,7 @@ import (
  */
 func StringLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.StringLiteral, error) {
 	res := &ast.StringLiteral{}
-	return word(tBind(res, &res.Span, fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents)))(ctx, start)
+	return word(tBind(res, fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents)))(ctx, start)
 }
 
 func stringContents(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], []rune, error) {

@@ -58,7 +58,7 @@ func PrimaryLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func TimeLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.TimeLiteral, error) {
 	res := &ast.TimeLiteral{}
-	return tBind(res, &res.Span,
+	return tBind(res,
 		fn.Alt(
 			fn.Seq(
 				fn.Bind(&res.Number, to[ast.Number](UnsignedNumber)),
@@ -77,7 +77,7 @@ func TimeLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune],
  */
 func TimeUnit(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.TimeUnit, error) {
 	res := &ast.TimeUnit{}
-	return tBind(res, &res.Span,
+	return tBind(res,
 		fn.Bind(&res.Op,
 			fn.Alt(
 				fn.Value(ast.MS, runes.TagNoCase("ms")),
@@ -96,7 +96,7 @@ func TimeUnit(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *a
  */
 func ConstantBitSelect(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ConstantBitSelect, error) {
 	res := &ast.ConstantBitSelect{}
-	return tBind(res, &res.Span,
+	return tBind(res,
 		bindValue(&res.Exprs, fn.Many0(
 			fn.Surrounded(
 				word(runes.Rune('[')),

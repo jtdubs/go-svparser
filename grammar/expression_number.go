@@ -66,7 +66,7 @@ func DecimalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
  */
 func decimalNumberZ(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberZ, error) {
 	res := &ast.DecimalNumberZ{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Opt(bindSpan(&res.SizeT, size)),
 		bindSpan(&res.BaseT, decimalBase),
 		bindSpan(&res.Z, zDigit),
@@ -82,7 +82,7 @@ func decimalNumberZ(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func decimalNumberX(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberX, error) {
 	res := &ast.DecimalNumberX{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Opt(bindSpan(&res.SizeT, size)),
 		bindSpan(&res.BaseT, decimalBase),
 		bindSpan(&res.X, xDigit),
@@ -98,7 +98,7 @@ func decimalNumberX(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func decimalNumberUnsigned(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DecimalNumberUnsigned, error) {
 	res := &ast.DecimalNumberUnsigned{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Opt(bindSpan(&res.SizeT, size)),
 		bindSpan(&res.BaseT, decimalBase),
 		bindSpan(&res.ValueT, unsignedNumber),
@@ -110,7 +110,7 @@ func decimalNumberUnsigned(ctx context.Context, start nom.Cursor[rune]) (nom.Cur
  */
 func binaryNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryNumber, error) {
 	res := &ast.BinaryNumber{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Opt(bindSpan(&res.SizeT, size)),
 		bindSpan(&res.BaseT, binaryBase),
 		bindSpan(&res.ValueT, binaryValue),
@@ -122,7 +122,7 @@ func binaryNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune]
  */
 func octalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OctalNumber, error) {
 	res := &ast.OctalNumber{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Opt(bindSpan(&res.SizeT, size)),
 		bindSpan(&res.BaseT, octalBase),
 		bindSpan(&res.ValueT, octalValue),
@@ -134,7 +134,7 @@ func octalNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune],
  */
 func hexNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HexNumber, error) {
 	res := &ast.HexNumber{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Opt(bindSpan(&res.SizeT, size)),
 		bindSpan(&res.BaseT, hexBase),
 		bindSpan(&res.ValueT, hexValue),
@@ -183,7 +183,7 @@ func RealNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], 
  */
 func FloatingPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FloatingPointNumber, error) {
 	res := &ast.FloatingPointNumber{}
-	return tBind(res, &res.Span, floatingPointNumber)(ctx, start)
+	return tBind(res, floatingPointNumber)(ctx, start)
 }
 
 /*
@@ -207,7 +207,7 @@ func floatingPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Curso
  */
 func FixedPointNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.FixedPointNumber, error) {
 	res := &ast.FixedPointNumber{}
-	return tBind(res, &res.Span, fixedPointNumber)(ctx, start)
+	return tBind(res, fixedPointNumber)(ctx, start)
 }
 
 /*
@@ -231,7 +231,7 @@ var exp = runes.Recognize(runes.OneOf("eE"))
  */
 func UnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
 	res := &ast.UnsignedNumber{}
-	return word(tBind(res, &res.Span, unsignedNumber))(ctx, start)
+	return word(tBind(res, unsignedNumber))(ctx, start)
 }
 
 /*
@@ -362,7 +362,7 @@ var zDigit = runes.OneOf("zZ?")
  */
 func UnbasedUnsizedLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnbasedUnsizedLiteral, error) {
 	res := &ast.UnbasedUnsizedLiteral{}
-	return tBind(res, &res.Span, unbasedUnsizedLiteral)(ctx, start)
+	return tBind(res, unbasedUnsizedLiteral)(ctx, start)
 }
 
 /*

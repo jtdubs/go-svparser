@@ -21,7 +21,7 @@ import (
  */
 func PulldownStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PulldownStrength, error) {
 	res := &ast.PulldownStrength{}
-	return tBind(res, &res.Span,
+	return tBind(res,
 		parens(
 			fn.Alt(
 				phrase(
@@ -46,7 +46,7 @@ func PulldownStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
  */
 func PullupStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PullupStrength, error) {
 	res := &ast.PullupStrength{}
-	return tBind(res, &res.Span,
+	return tBind(res,
 		parens(
 			fn.Alt(
 				phrase(

@@ -19,7 +19,7 @@ import (
  */
 func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryOperator, error) {
 	res := &ast.UnaryOperator{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.UnaryLogicalReductionNand, runes.Tag("~&")),
@@ -46,7 +46,7 @@ func UnaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune
  */
 func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryOperator, error) {
 	res := &ast.BinaryOperator{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.BinaryArithmeticShiftLeft, runes.Tag("<<<")),
@@ -88,7 +88,7 @@ func BinaryOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
  */
 func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IncOrDecOperator, error) {
 	res := &ast.IncOrDecOperator{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.Inc, runes.Tag("++")),
@@ -104,7 +104,7 @@ func IncOrDecOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
  */
 func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnaryModulePathOperator, error) {
 	res := &ast.UnaryModulePathOperator{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.UnaryLogicalReductionNand, runes.Tag("~&")),
@@ -127,7 +127,7 @@ func UnaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.C
  */
 func BinaryModulePathOperator(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BinaryModulePathOperator, error) {
 	res := &ast.BinaryModulePathOperator{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		bindValue(&res.Op,
 			fn.Alt(
 				fn.Value(ast.BinaryBitwiseXnor, runes.Tag("^~")),

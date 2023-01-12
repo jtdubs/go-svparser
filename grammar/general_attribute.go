@@ -18,7 +18,7 @@ import (
  */
 func AttributeInstance(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.AttributeInstance, error) {
 	res := &ast.AttributeInstance{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Discard(runes.Tag("(*")),
 		fn.Bind(&res.Specs, fn.SeparatedList1(
 			word(runes.Rune(',')),
@@ -33,7 +33,7 @@ func AttributeInstance(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[
  */
 func AttrSpec(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.AttrSpec, error) {
 	res := &ast.AttrSpec{}
-	return tBindPhrase(res, &res.Span,
+	return tBindPhrase(res,
 		fn.Bind(&res.Name, AttrName),
 		fn.Opt(phrase(
 			fn.Discard(runes.Rune('=')),
@@ -47,5 +47,5 @@ func AttrSpec(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *a
  */
 func AttrName(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.AttrName, error) {
 	res := &ast.AttrName{}
-	return tBind(res, &res.Span, fn.Bind(&res.ID, Identifier))(ctx, start)
+	return tBind(res, fn.Bind(&res.ID, Identifier))(ctx, start)
 }

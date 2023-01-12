@@ -29,7 +29,7 @@ func Comment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast
 // block_comment ::= /* comment_text */
 func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.BlockComment, error) {
 	res := &ast.BlockComment{}
-	return tBindSeq(res, &res.Span,
+	return tBindSeq(res,
 		fn.Discard(runes.Tag("/*")),
 		bindSpan(&res.TextT,
 			runes.Join(
@@ -50,7 +50,7 @@ func BlockComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune]
  */
 func OneLineComment(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.OneLineComment, error) {
 	res := &ast.OneLineComment{}
-	return tBindSeq(res, &res.Span,
+	return tBindSeq(res,
 		fn.Discard(runes.Tag("//")),
 		bindSpan(&res.TextT,
 			runes.Join(

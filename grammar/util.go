@@ -15,6 +15,17 @@ func bindSpan[T any](t *nom.Span[rune], p nom.ParseFn[rune, T]) nom.ParseFn[rune
 	return bindValue(t, fn.Spanning(p))
 }
 
+func bindSpanT[T ast.HasSpan, U any](t T, p nom.ParseFn[rune, U]) nom.ParseFn[rune, struct{}] {
+	return func(ctx context.Context, start nom.Cursor[rune]) (end nom.Cursor[rune], res struct{}, err error) {
+		var span nom.Span[rune]
+		end, span, err = fn.Spanning(p)(ctx, start)
+		if err == nil {
+			t.SetSpan(span)
+		}
+		return
+	}
+}
+
 func bindValue[T any](t *T, p nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 	return func(ctx context.Context, start nom.Cursor[rune]) (end nom.Cursor[rune], res struct{}, err error) {
 		var val T
@@ -32,54 +43,48 @@ func to[O, I any](p nom.ParseFn[rune, I]) nom.ParseFn[rune, O] {
 	})
 }
 
-func bake[T ast.Bakeable](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
+func bake[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
 	return func(ctx context.Context, start nom.Cursor[rune]) (end nom.Cursor[rune], res T, err error) {
 		end, res, err = p(ctx, start)
 		if err == nil {
-			err = res.Bake()
+			if b, ok := any(res).(ast.Bakeable); ok {
+				err = b.Bake()
+			}
 		}
 		return
 	}
 }
 
-func tBind[T, U any](t T, s *nom.Span[rune], p nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	if b, ok := any(t).(ast.Bakeable); ok {
-		return cache.CacheN(1, trace.TraceN(1, to[T](bake(fn.Value(b, bindSpan(s, p))))))
-	} else {
-		return cache.CacheN(1, trace.TraceN(1, fn.Value(t, bindSpan(s, p))))
-	}
+func top[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
+	return cache.CacheN(2, trace.TraceN(2, p))
 }
 
-func tBindSeq[T, U any](t T, s *nom.Span[rune], ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	if b, ok := any(t).(ast.Bakeable); ok {
-		return cache.CacheN(1, trace.TraceN(1, to[T](bake(fn.Value(b, bindSpan(s, fn.Seq(ps...)))))))
-	} else {
-		return cache.CacheN(1, trace.TraceN(1, fn.Value(t, bindSpan(s, fn.Seq(ps...)))))
-	}
+func tBind[T ast.HasSpan, U any](t T, p nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
+	return top(to[T](bake(fn.Value(t, bindSpanT(t, p)))))
 }
 
-func tBindPhrase[T, U any](t T, s *nom.Span[rune], ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
-	if b, ok := any(t).(ast.Bakeable); ok {
-		return cache.CacheN(1, trace.TraceN(1, to[T](bake(fn.Value(b, bindSpan(s, phrase(ps...)))))))
-	} else {
-		return cache.CacheN(1, trace.TraceN(1, fn.Value(t, bindSpan(s, phrase(ps...)))))
-	}
+func tBindSeq[T ast.HasSpan, U any](t T, ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
+	return top(to[T](bake(fn.Value(t, bindSpanT(t, fn.Seq(ps...))))))
+}
+
+func tBindPhrase[T ast.HasSpan, U any](t T, ps ...nom.ParseFn[rune, U]) nom.ParseFn[rune, T] {
+	return top(to[T](bake(fn.Value(t, bindSpanT(t, phrase(ps...))))))
 }
 
 func tJoinSeq(ps ...nom.ParseFn[rune, rune]) nom.ParseFn[rune, string] {
-	return cache.CacheN(1, trace.TraceN(1, runes.Join(fn.Seq(ps...))))
+	return top(runes.Join(fn.Seq(ps...)))
 }
 
 func tConcatSeq(ps ...nom.ParseFn[rune, string]) nom.ParseFn[rune, string] {
-	return cache.CacheN(1, trace.TraceN(1, runes.Concat(fn.Seq(ps...))))
+	return top(runes.Concat(fn.Seq(ps...)))
 }
 
 func tCons(p nom.ParseFn[rune, rune], ps nom.ParseFn[rune, string]) nom.ParseFn[rune, string] {
-	return cache.CacheN(1, trace.TraceN(1, runes.Cons(p, ps)))
+	return top(runes.Cons(p, ps))
 }
 
 func tAlt[T any](ps ...nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
-	return cache.CacheN(1, trace.TraceN(1, fn.Alt(ps...)))
+	return top(fn.Alt(ps...))
 }
 
 func parens[T any](p nom.ParseFn[rune, T]) nom.ParseFn[rune, T] {
