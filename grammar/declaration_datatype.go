@@ -66,11 +66,19 @@ import (
  * class_scope ::= class_type ::
  */
 
+func ClassScope() {
+	// TODO(justindubs): implement me
+}
+
 /*
  * class_type ::=
  *   ps_class_identifier [ parameter_value_assignment ]
  *   { :: class_identifier [ parameter_value_assignment ] }
  */
+
+func ClassType() {
+	// TODO(justindubs): implement me
+}
 
 /*
  * integer_type ::= integer_vector_type | integer_atom_type

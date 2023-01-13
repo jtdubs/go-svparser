@@ -603,9 +603,28 @@ func PackageIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[
  *   package_identifier ::
  *   | $unit ::
  */
-func PackageScope() {
-	// TODO(justindubs): implement me
-	_ = fn.Discard(PackageIdentifier)
+func PackageScope(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.PackageScope, error) {
+	scope := &ast.IdentifierPackageScope{}
+	return top(
+		fn.Alt(
+			to[ast.PackageScope](
+				token(scope,
+					phrase(
+						bind(&scope.ID, PackageIdentifier),
+						fn.Discard(runes.Tag("::")),
+					),
+				),
+			),
+			to[ast.PackageScope](
+				fn.Value(&ast.UnitPackageScope{},
+					phrase(
+						runes.Tag("$unit"),
+						runes.Tag("::"),
+					),
+				),
+			),
+		),
+	)(ctx, start)
 }
 
 /*
@@ -671,33 +690,61 @@ func PropertyIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor
 /*
  * ps_class_identifier ::= [ package_scope ] class_identifier
  */
-func PsClassIdentifier() {
-	// TODO(justindubs): _ = fn.Discard(PackageScope)
-	_ = fn.Discard(ClassIdentifier)
+func PsClassIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PsClassIdentifier, error) {
+	res := &ast.PsClassIdentifier{}
+	return top(
+		token(res,
+			phrase(
+				fn.Opt(bind(&res.Scope, PackageScope)),
+				bind(&res.ID, ClassIdentifier),
+			),
+		),
+	)(ctx, start)
 }
 
 /*
  * ps_covergroup_identifier ::= [ package_scope ] covergroup_identifier
  */
-func PsCovergroupIdentifier() {
-	// TODO(justindubs): _ = fn.Discard(PackageScope)
-	_ = fn.Discard(CovergroupIdentifier)
+func PsCovergroupIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PsCovergroupIdentifier, error) {
+	res := &ast.PsCovergroupIdentifier{}
+	return top(
+		token(res,
+			phrase(
+				fn.Opt(bind(&res.Scope, PackageScope)),
+				bind(&res.ID, CovergroupIdentifier),
+			),
+		),
+	)(ctx, start)
 }
 
 /*
  * ps_checker_identifier ::= [ package_scope ] checker_identifier
  */
-func PsCheckerIdentifier() {
-	// TODO(justindubs): _ = fn.Discard(PackageScope)
-	_ = fn.Discard(CheckerIdentifier)
+func PsCheckerIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PsCheckerIdentifier, error) {
+	res := &ast.PsCheckerIdentifier{}
+	return top(
+		token(res,
+			phrase(
+				fn.Opt(bind(&res.Scope, PackageScope)),
+				bind(&res.ID, CheckerIdentifier),
+			),
+		),
+	)(ctx, start)
 }
 
 /*
  * ps_identifier ::= [ package_scope ] identifier
  */
-func PsIdentifier() {
-	// TODO(justindubs): _ = fn.Discard(PackageScope)
-	_ = fn.Discard(Identifier)
+func PsIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.PsIdentifier, error) {
+	res := &ast.PsIdentifier{}
+	return top(
+		token(res,
+			phrase(
+				fn.Opt(bind(&res.Scope, PackageScope)),
+				bind(&res.ID, Identifier),
+			),
+		),
+	)(ctx, start)
 }
 
 /*

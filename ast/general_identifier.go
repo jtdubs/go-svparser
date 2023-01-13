@@ -569,3 +569,68 @@ type HierarchicalIdentifierPart struct {
 func (i *HierarchicalIdentifierPart) String() string {
 	return fmt.Sprintf("HierarchicalIdentifierPart(%v, %v)", i.ID, i.Bits)
 }
+
+type PackageScope interface {
+	isPackageScope()
+}
+
+type IdentifierPackageScope struct {
+	Token
+	ID *PackageIdentifier
+}
+
+func (i *IdentifierPackageScope) String() string {
+	return fmt.Sprintf("IdentifierPackageScope(%v)", i.ID)
+}
+
+func (*IdentifierPackageScope) isPackageScope() {}
+
+type UnitPackageScope struct {
+	Token
+}
+
+func (i *UnitPackageScope) String() string {
+	return "UnitPackageScope()"
+}
+
+func (*UnitPackageScope) isPackageScope() {}
+
+type PsClassIdentifier struct {
+	Token
+	Scope PackageScope
+	ID    *ClassIdentifier
+}
+
+func (i *PsClassIdentifier) String() string {
+	return fmt.Sprintf("PsClassIdentifier(%v, %v)", i.Scope, i.ID)
+}
+
+type PsCovergroupIdentifier struct {
+	Token
+	Scope PackageScope
+	ID    *CovergroupIdentifier
+}
+
+func (i *PsCovergroupIdentifier) String() string {
+	return fmt.Sprintf("PsCovergroupIdentifier(%v, %v)", i.Scope, i.ID)
+}
+
+type PsCheckerIdentifier struct {
+	Token
+	Scope PackageScope
+	ID    *CheckerIdentifier
+}
+
+func (i *PsCheckerIdentifier) String() string {
+	return fmt.Sprintf("PsCheckerIdentifier(%v, %v)", i.Scope, i.ID)
+}
+
+type PsIdentifier struct {
+	Token
+	Scope PackageScope
+	ID    Identifier
+}
+
+func (i *PsIdentifier) String() string {
+	return fmt.Sprintf("PsIdentifier(%v, %v)", i.Scope, i.ID)
+}
