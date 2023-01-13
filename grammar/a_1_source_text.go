@@ -1,4 +1,4 @@
-package ast
+package grammar
 
 //
 // A.1 Source text

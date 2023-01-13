@@ -369,7 +369,6 @@ func EnumIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[run
 func escapedIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.EscapedIdentifier, error) {
 	res := &ast.EscapedIdentifier{}
 	return top(
-		// TODO(justindubs): capture whitespace
 		word(
 			token(res,
 				fn.Seq(
@@ -539,7 +538,6 @@ func lastHierarchicalIdentifierPart(ctx context.Context, start nom.Cursor[rune])
  *   simple_identifier
  *   | escaped_identifier
  */
-
 func Identifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Identifier, error) {
 	return top(
 		fn.Alt(
@@ -945,7 +943,6 @@ func SignalIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[r
 func simpleIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.SimpleIdentifier, error) {
 	res := &ast.SimpleIdentifier{}
 	return top(
-		// TODO(justindubs): capture whitespace
 		word(
 			token(res,
 				fn.Preceded(alpha_, fn.Many0(alphanumeric_S)),
@@ -972,7 +969,6 @@ func SpecparamIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Curso
 func SystemTfIdentifier(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.SystemTfIdentifier, error) {
 	res := &ast.SystemTfIdentifier{}
 	return top(
-		// TODO(justindubs): capture whitespace
 		word(
 			token(res,
 				fn.Preceded(

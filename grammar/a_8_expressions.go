@@ -976,7 +976,6 @@ var exp = runes.Recognize(runes.OneOf("eE"))
 func UnsignedNumber(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.UnsignedNumber, error) {
 	res := &ast.UnsignedNumber{}
 	return top(
-		// TODO(justindubs): capture whitespace
 		word(
 			token(res, unsignedNumber),
 		),
@@ -1150,7 +1149,6 @@ func unbasedUnsizedLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cur
 func StringLiteral(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.StringLiteral, error) {
 	res := &ast.StringLiteral{}
 	return top(
-		// TODO(justindubs): capture whitespace
 		word(
 			token(res,
 				fn.Surrounded(runes.Rune('"'), runes.Rune('"'), stringContents),
