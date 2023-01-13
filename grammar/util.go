@@ -2,6 +2,7 @@ package grammar
 
 import (
 	"context"
+	"unicode"
 
 	"github.com/jtdubs/go-nom"
 	"github.com/jtdubs/go-nom/cache"
@@ -104,3 +105,53 @@ func phrase[T any](ps ...nom.ParseFn[rune, T]) nom.ParseFn[rune, struct{}] {
 }
 
 var comma = word(fn.Discard(runes.Rune(',')))
+
+var asciiPrintNonWS = fn.Satisfy(func(r rune) bool {
+	return r < 128 && unicode.IsPrint(r) && !unicode.IsSpace(r)
+})
+
+var alpha_ = runes.OneOf("abcdefghijklmnoprqstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ_")
+var alphanumeric_ = runes.OneOf("abcdefghijklmnoprqstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789_")
+var alphanumeric_S = runes.OneOf("abcdefghijklmnoprqstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789_$")
+
+func Whitespace0(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], []ast.Whitespace, error) {
+	return trace.Hidden(
+		top(
+			fn.Many0(Whitespace),
+		),
+	)(ctx, start)
+}
+
+func Whitespace1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], []ast.Whitespace, error) {
+	return trace.Hidden(
+		top(
+			fn.Many1(Whitespace),
+		),
+	)(ctx, start)
+}
+
+func Whitespace(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.Whitespace, error) {
+	return trace.Hidden(
+		top(
+			fn.Alt(
+				to[ast.Whitespace](Comment),
+				to[ast.Whitespace](Spaces),
+			),
+		),
+	)(ctx, start)
+}
+
+func Spaces(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Spaces, error) {
+	res := &ast.Spaces{}
+	return trace.Hidden(
+		top(
+			bake(
+				fn.Value(res,
+					bindSpan(&res.Span,
+						fn.Many1(whitespace),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}

@@ -10,6 +10,7 @@ import (
 	"github.com/jtdubs/go-nom/runes"
 	"github.com/jtdubs/go-nom/trace"
 	"github.com/jtdubs/go-nom/trace/printtracer"
+	"github.com/jtdubs/go-svparser/ast"
 )
 
 type testCase[T any] struct {
@@ -65,5 +66,16 @@ func validateHelper[T, U any](t *testing.T, ctx context.Context, name string, fn
 	if diff := cmp.Diff(got, tc.want, cmpopts.IgnoreTypes(nom.Span[rune]{})); diff != "" {
 		t.Errorf("%v(%q) = %v, want %v", name, tc.in, got, tc.want)
 		return
+	}
+}
+
+func TestWhitespace(t *testing.T) {
+	testCases := []testCase[ast.Whitespace]{
+		{in: "// hello\nworld", want: &ast.OneLineComment{Text: " hello"}, wantRest: "world"},
+		{in: "  // hello\nworld", want: &ast.Spaces{Text: "  "}, wantRest: "// hello\nworld"},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "Whitespace", Whitespace, tc)
 	}
 }

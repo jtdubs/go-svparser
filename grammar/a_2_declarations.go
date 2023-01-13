@@ -1,5 +1,14 @@
 package grammar
 
+import (
+	"context"
+
+	"github.com/jtdubs/go-nom"
+	"github.com/jtdubs/go-nom/fn"
+	"github.com/jtdubs/go-nom/runes"
+	"github.com/jtdubs/go-svparser/ast"
+)
+
 //
 // A.2 Declarations
 //
@@ -188,22 +197,106 @@ package grammar
 /*
  * integer_type ::= integer_vector_type | integer_atom_type
  */
+func IntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], ast.IntegerType, error) {
+	return top(
+		fn.Alt(
+			to[ast.IntegerType](IntegerVectorType),
+			to[ast.IntegerType](IntegerAtomType),
+		),
+	)(ctx, start)
+}
 
 /*
  * integer_atom_type ::= byte | shortint | int | longint | integer | time
  */
+func IntegerAtomType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IntegerAtomType, error) {
+	res := &ast.IntegerAtomType{}
+	return top(
+		token(res,
+			word(
+				bind(&res.Type,
+					fn.Alt(
+						fn.Value(ast.Byte, runes.TagNoCase("byte")),
+						fn.Value(ast.ShortInt, runes.TagNoCase("shortint")),
+						fn.Value(ast.Integer, runes.TagNoCase("integer")),
+						fn.Value(ast.Int, runes.TagNoCase("int")),
+						fn.Value(ast.LongInt, runes.TagNoCase("longint")),
+						fn.Value(ast.Time, runes.TagNoCase("time")),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 /*
  * integer_vector_type ::= bit | logic | reg
  */
+func IntegerVectorType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.IntegerVectorType, error) {
+	res := &ast.IntegerVectorType{}
+	return top(
+		token(res,
+			word(
+				bind(&res.Type,
+					fn.Alt(
+						fn.Value(ast.Bit, runes.TagNoCase("bit")),
+						fn.Value(ast.Logic, runes.TagNoCase("logic")),
+						fn.Value(ast.Reg, runes.TagNoCase("reg")),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 /*
  * non_integer_type ::= shortreal | real | realtime
  */
+func NonIntegerType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.NonIntegerType, error) {
+	res := &ast.NonIntegerType{}
+	return top(
+		token(res,
+			word(
+				bind(&res.Type,
+					fn.Alt(
+						fn.Value(ast.ShortReal, runes.TagNoCase("shortreal")),
+						fn.Value(ast.RealTime, runes.TagNoCase("realtime")),
+						fn.Value(ast.Real, runes.TagNoCase("real")),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 /*
  * net_type ::= supply0 | supply1 | tri | triand | trior | trireg| tri0 | tri1 | uwire| wire | wand | wor
  */
+func NetType(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.NetType, error) {
+	res := &ast.NetType{}
+	return top(
+		token(res,
+			word(
+				bind(&res.Type,
+					fn.Alt(
+						fn.Value(ast.NetSupply0, runes.TagNoCase("supply0")),
+						fn.Value(ast.NetSupply1, runes.TagNoCase("supply1")),
+						fn.Value(ast.NetTri, runes.TagNoCase("tri")),
+						fn.Value(ast.NetTriAnd, runes.TagNoCase("triand")),
+						fn.Value(ast.NetTriOr, runes.TagNoCase("trior")),
+						fn.Value(ast.NetTriReg, runes.TagNoCase("trireg")),
+						fn.Value(ast.NetTri0, runes.TagNoCase("tri0")),
+						fn.Value(ast.NetTri1, runes.TagNoCase("tri1")),
+						fn.Value(ast.NetUWire, runes.TagNoCase("uwire")),
+						fn.Value(ast.NetWire, runes.TagNoCase("wire")),
+						fn.Value(ast.NetWAnd, runes.TagNoCase("wand")),
+						fn.Value(ast.NetWOr, runes.TagNoCase("wor")),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 /*
  * net_port_type ::=
@@ -223,6 +316,21 @@ package grammar
 /*
  * signing ::= signed | unsigned
  */
+func Signing(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Signing, error) {
+	res := &ast.Signing{}
+	return top(
+		token(res,
+			word(
+				bind(&res.Type,
+					fn.Alt(
+						fn.Value(ast.Signed, runes.TagNoCase("signed")),
+						fn.Value(ast.Unsigned, runes.TagNoCase("unsigned")),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 /*
  * simple_type ::= integer_type | non_integer_type | ps_type_identifier | ps_parameter_identifier
@@ -260,18 +368,123 @@ package grammar
  *   | ( highz0 , strength1 )
  *   | ( highz1 , strength0 )
  */
+func DriveStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.DriveStrength, error) {
+	res := &ast.DriveStrength{}
+	return top(
+		token(res,
+			parens(
+				fn.Alt(
+					fn.Seq(
+						bind(&res.A, to[ast.DriveStrengthOption](Strength0)),
+						comma,
+						bind(&res.B, to[ast.DriveStrengthOption](Strength1))),
+					fn.Seq(
+						bind(&res.A, to[ast.DriveStrengthOption](Strength1)),
+						comma,
+						bind(&res.B, to[ast.DriveStrengthOption](Strength0))),
+					fn.Seq(
+						bind(&res.A, to[ast.DriveStrengthOption](Strength0)),
+						comma,
+						bind(&res.B, to[ast.DriveStrengthOption](highZ1))),
+					fn.Seq(
+						bind(&res.A, to[ast.DriveStrengthOption](Strength1)),
+						comma,
+						bind(&res.B, to[ast.DriveStrengthOption](highZ0))),
+					fn.Seq(
+						bind(&res.A, to[ast.DriveStrengthOption](highZ0)),
+						comma,
+						bind(&res.B, to[ast.DriveStrengthOption](Strength1))),
+					fn.Seq(
+						bind(&res.A, to[ast.DriveStrengthOption](highZ1)),
+						comma,
+						bind(&res.B, to[ast.DriveStrengthOption](Strength0))),
+				),
+			),
+		),
+	)(ctx, start)
+}
+
+func highZ0(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HighZ0, error) {
+	res := &ast.HighZ0{}
+	return top(
+		token(res,
+			word(runes.TagNoCase("highz0")),
+		),
+	)(ctx, start)
+}
+
+func highZ1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.HighZ1, error) {
+	res := &ast.HighZ1{}
+	return top(
+		token(res,
+			word(runes.TagNoCase("highz1")),
+		),
+	)(ctx, start)
+}
 
 /*
  * strength0 ::= supply0 | strong0 | pull0 | weak0
  */
+func Strength0(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Strength0, error) {
+	res := &ast.Strength0{}
+	return top(
+		token(res,
+			word(
+				bind(&res.Type,
+					fn.Alt(
+						fn.Value(ast.StrengthSupply0, runes.TagNoCase("supply0")),
+						fn.Value(ast.StrengthStrong0, runes.TagNoCase("strong0")),
+						fn.Value(ast.StrengthPull0, runes.TagNoCase("pull0")),
+						fn.Value(ast.StrengthWeak0, runes.TagNoCase("weak0")),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 /*
  * strength1 ::= supply1 | strong1 | pull1 | weak1
  */
+func Strength1(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.Strength1, error) {
+	res := &ast.Strength1{}
+	return top(
+		token(res,
+			word(
+				bind(&res.Type,
+					fn.Alt(
+						fn.Value(ast.StrengthSupply1, runes.TagNoCase("supply1")),
+						fn.Value(ast.StrengthStrong1, runes.TagNoCase("strong1")),
+						fn.Value(ast.StrengthPull1, runes.TagNoCase("pull1")),
+						fn.Value(ast.StrengthWeak1, runes.TagNoCase("weak1")),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 /*
  * charge_strength ::= ( small ) | ( medium ) | ( large )
  */
+func ChargeStrength(ctx context.Context, start nom.Cursor[rune]) (nom.Cursor[rune], *ast.ChargeStrength, error) {
+	res := &ast.ChargeStrength{}
+	return top(
+		token(res,
+			parens(
+				bindSpan(&res.TypeT,
+					bind(&res.Type,
+						fn.Alt(
+							fn.Value(ast.ChargeSmall, runes.TagNoCase("small")),
+							fn.Value(ast.ChargeMedium, runes.TagNoCase("medium")),
+							fn.Value(ast.ChargeLarge, runes.TagNoCase("large")),
+						),
+					),
+				),
+			),
+		),
+	)(ctx, start)
+}
 
 //
 // A.2.2.3 Delays

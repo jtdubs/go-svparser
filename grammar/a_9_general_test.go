@@ -6,6 +6,57 @@ import (
 	"github.com/jtdubs/go-svparser/ast"
 )
 
+func TestAttributeInstance(t *testing.T) {
+	testCases := []testCase[*ast.AttributeInstance]{
+		{
+			in: "\t(* foo , bar = 42 *)",
+			want: &ast.AttributeInstance{
+				Specs: []*ast.AttrSpec{
+					{
+						Name: &ast.AttrName{ID: &ast.SimpleIdentifier{Name: "foo"}},
+					},
+					{
+						Name: &ast.AttrName{ID: &ast.SimpleIdentifier{Name: "bar"}},
+						Expr: &ast.UnsignedNumber{Value: 42},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "AttributeInstance", AttributeInstance, tc)
+	}
+}
+
+func TestAttrSpec(t *testing.T) {
+	testCases := []testCase[*ast.AttrSpec]{
+		{
+			in:   "foo",
+			want: &ast.AttrSpec{Name: &ast.AttrName{ID: &ast.SimpleIdentifier{Name: "foo"}}},
+		},
+		{
+			in:   "\tfoo = 42",
+			want: &ast.AttrSpec{Name: &ast.AttrName{ID: &ast.SimpleIdentifier{Name: "foo"}}, Expr: &ast.UnsignedNumber{Value: 42}},
+		},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "AttrSpec", AttrSpec, tc)
+	}
+}
+
+func TestComment(t *testing.T) {
+	testCases := []testCase[ast.Comment]{
+		{in: "// hello world\n", want: &ast.OneLineComment{Text: " hello world"}},
+		{in: "/* hello\nworld */", want: &ast.BlockComment{Text: " hello\nworld "}},
+	}
+
+	for _, tc := range testCases {
+		validate(t, "Comment", Comment, tc)
+	}
+}
+
 func TestIdentifier(t *testing.T) {
 	testCases := []testCase[ast.Identifier]{
 		{in: "hello", want: &ast.SimpleIdentifier{Name: "hello"}},
